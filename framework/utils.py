@@ -7,9 +7,9 @@ def board_to_key(board):
     return key
 
 def key_to_board(key):
-    board = np.zeros((10, 9))
-    for i in range(10):
-        for j in range(9):
+    board = np.zeros((3, 3))
+    for i in range(3):
+        for j in range(3):
             board[i][j] = key[i][j]
     return board
 
