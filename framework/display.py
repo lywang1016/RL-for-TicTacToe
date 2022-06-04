@@ -28,9 +28,9 @@ class GUI:
         self.screen.blit(button_imgs['reset'], (400, 180))
 
         if round == 'r':
-            self.screen.blit(round_imgs['r_move'], (420, 40))
+            self.screen.blit(round_imgs['r_move'], (425, 40))
         else:
-            self.screen.blit(round_imgs['b_move'], (420, 320))     
+            self.screen.blit(round_imgs['b_move'], (425, 260))     
 
         for i in range(3):
             for j in range(3):

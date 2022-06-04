@@ -6,8 +6,8 @@ pieces_images = {
 }
 
 round_imgs = {
-    'r_move': pygame.image.load("img/r_move.jpg"),
-    'b_move': pygame.image.load("img/b_move.jpg")
+    'r_move': pygame.image.load("img/white.png"),
+    'b_move': pygame.image.load("img/black.jpg")
 }
 
 button_imgs = {
