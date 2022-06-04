@@ -1,6 +1,6 @@
 {
-    'total_episode_num': 300,
-    'save_episode_num': 1000,
+    'total_episode_num': 20,
+    'save_episode_num': 200,
     'lr_start': 0.001,
     'lr_end': 0.0001,
     'lr_decay': 20,

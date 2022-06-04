@@ -19,13 +19,10 @@ def actions_replay(csv_path):
             gui.check_event()
 
             posi = (int(row[0][0]), int(row[0][2]))
-            if row[0][5] == ',':
-                move0 = int(row[0][4])
-                move1 = int(row[0][6:])
+            if row[0][4] == '-':
+                move = -int(row[0][5])
             else:
-                move0 = int(row[0][4:6])
-                move1 = int(row[0][7:])
-            move = (move0, move1)
+                move = int(row[0][4])
             
             chess_board.move_piece(posi, move)
             red = not red
@@ -39,4 +36,4 @@ def actions_replay(csv_path):
         gui.check_event()
 
 if __name__ == '__main__':
-    actions_replay('game_record/2022_5_31-11_9_16_486123.csv')
+    actions_replay('game_record/2022_6_4-2_1_20_881489.csv')
