@@ -4,7 +4,7 @@
     'lr_start': 0.001,
     'lr_end': 0.0001,
     'lr_decay': 20,
-    'batch_size': 32,
+    'batch_size': 8,
     'epoch': 50,
     'save_every': 10,
     'save_model_path': 'model/model.pth'
