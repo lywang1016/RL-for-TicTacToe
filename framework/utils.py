@@ -13,6 +13,11 @@ def key_to_board(key):
             board[i][j] = key[i][j]
     return board
 
+def rotate_action(posi, value):
+    value_ = -value
+    posi_ = (2 - posi[0], 2 - posi[1])
+    return posi_, value_
+
 def board_turn180(board_in):
     board = board_in[::-1,::-1]
     for i in range(3):

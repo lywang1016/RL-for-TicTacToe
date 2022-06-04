@@ -15,8 +15,6 @@ class ChessBoard:
         self.red_history = []
         self.black_history = []
         self.action_history = []
-        self.red_action_history = []
-        self.black_action_history = []
         self.red_action_board = []
         self.black_action_board = []
         self.reset_board()
@@ -31,8 +29,6 @@ class ChessBoard:
         self.black_history = []
         self.dataset = {}
         self.action_history = []
-        self.red_action_history = []
-        self.black_action_history = []
         self.red_action_board = []
         self.black_action_board = []
 
@@ -108,10 +104,8 @@ class ChessBoard:
 
         if self.red:
             self.red_history.append(board_to_key(self.board_states()))
-            self.red_action_history.append(position)
         else:
             self.black_history.append(board_to_key(board_turn180(self.board_states())))
-            self.black_action_history.append(position)
 
         if self.board[position[0]][position[1]] == 0:
             self.board[position[0]][position[1]] = value
