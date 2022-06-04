@@ -18,7 +18,6 @@ class Player():
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
-        self.cadidate_move = []
         self.all_move = {}
     
     def check_moves(self):
@@ -44,7 +43,6 @@ class HumanPlayer(Player):
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
-        self.cadidate_move = []
         self.all_move = {}
         self.move = None
 
@@ -52,7 +50,6 @@ class HumanPlayer(Player):
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
-        self.cadidate_move = []
         self.all_move = {}
         self.move = None
 
@@ -70,10 +67,7 @@ class AIPlayer(Player):
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
-        self.cadidate_move = []
         self.all_move = {}
-        self.past_board = []
-        self.past_actions = []
         with open('ai/config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
         if not exists(self.config['save_model_path']):  # random action only
@@ -89,10 +83,7 @@ class AIPlayer(Player):
         self.current_board = None
         self.current_piece_value = 0
         self.current_piece_posi = None
-        self.cadidate_move = []
         self.all_move = {}
-        self.past_board = []
-        self.past_actions = []
         if self.explore_rate < 1:
             checkpoint = torch.load(self.config['save_model_path'])
             self.q_star.load_state_dict(checkpoint['model_state_dict'])
