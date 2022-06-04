@@ -89,6 +89,11 @@ class AIPlayer(Player):
             self.q_star.load_state_dict(checkpoint['model_state_dict'])
             self.q_star.eval()
 
+    def set_explore_rate(self, explore_rate):
+        self.explore_rate = explore_rate
+        if not exists(self.config['save_model_path']):  # random action only
+            self.explore_rate = 1
+
     def update_board(self, board):
         if self.color == 'b':       # rotate board
             self.current_board = board_turn180(board)
