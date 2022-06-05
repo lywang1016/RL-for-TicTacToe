@@ -173,7 +173,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
             r_state = r_player.current_board
             r_action = chess_board.board_states()
-            r_reward = reward_function(r_action)
+            r_reward = reward_function(r_state, r_action)
             r_state = board_trans(r_state)
             r_action = board_trans(r_action)
 
@@ -208,7 +208,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
             b_state = b_player.current_board
             b_action = board_turn180(chess_board.board_states())
-            b_reward = reward_function(b_action)
+            b_reward = reward_function(b_state, b_action)
             b_state = board_trans(b_state)
             b_action = board_trans(b_action)
 
