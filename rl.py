@@ -161,6 +161,13 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             #     break
             posi, move = r_player.ai_action()
             chess_board.move_piece(posi, move)
+
+            r_state = r_player.current_board
+            r_action = chess_board.board_states()
+            r_reward = reward_function(r_state, r_action)
+            r_state = board_trans(r_state)
+            r_action = board_trans(r_action)
+
             if chess_board.done:
                 if chess_board.win == 'r':
                     print(' Red Win!')
@@ -169,13 +176,13 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                 if chess_board.win == 't':
                     print(' Tie!')
                 print(chess_board.board_states())
-            red = not red
 
-            r_state = r_player.current_board
-            r_action = chess_board.board_states()
-            r_reward = reward_function(r_state, r_action)
-            r_state = board_trans(r_state)
-            r_action = board_trans(r_action)
+                r_next_state = chess_board.board_states()
+                r_next_state = board_trans(r_next_state)
+                memory.push(r_state, r_action, r_next_state, r_reward)
+                loss = optimize_model()
+                total_loss += loss
+                cnt += 1
 
             if b_move:
                 b_next_state = board_turn180(chess_board.board_states())
@@ -185,6 +192,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                 total_loss += loss
                 cnt += 1
             
+            red = not red
         else:
             gui.update(chess_board.board_states(), 'b')
 
@@ -195,6 +203,14 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             #     break
             posi, move = b_player.ai_action()
             chess_board.move_piece(posi, move)
+            b_move = True
+
+            b_state = b_player.current_board
+            b_action = board_turn180(chess_board.board_states())
+            b_reward = reward_function(b_state, b_action)
+            b_state = board_trans(b_state)
+            b_action = board_trans(b_action)
+
             if chess_board.done:
                 if chess_board.win == 'r':
                     print(' Red Win!')
@@ -203,21 +219,22 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                 if chess_board.win == 't':
                     print(' Tie!')
                 print(chess_board.board_states())
-            b_move = True
-            red = not red
 
-            b_state = b_player.current_board
-            b_action = board_turn180(chess_board.board_states())
-            b_reward = reward_function(b_state, b_action)
-            b_state = board_trans(b_state)
-            b_action = board_trans(b_action)
-
+                b_next_state = board_turn180(chess_board.board_states())
+                b_next_state = board_trans(b_next_state)
+                memory.push(b_state, b_action, b_next_state, b_reward)
+                loss = optimize_model()
+                total_loss += loss
+                cnt += 1
+           
             r_next_state = chess_board.board_states()
             r_next_state = board_trans(r_next_state)
             memory.push(r_state, r_action, r_next_state, r_reward)
             loss = optimize_model()
             total_loss += loss
-            cnt += 1
+            cnt += 1 
+
+            red = not red
 
     print('Last episode loss is: ' + str(total_loss/cnt))
     loss_history.append(total_loss/cnt)
