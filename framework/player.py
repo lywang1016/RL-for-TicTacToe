@@ -84,10 +84,10 @@ class AIPlayer(Player):
         self.current_piece_value = 0
         self.current_piece_posi = None
         self.all_move = {}
-        if self.explore_rate < 1:
-            checkpoint = torch.load(self.config['save_model_path'])
-            self.q_star.load_state_dict(checkpoint['model_state_dict'])
-            self.q_star.eval()
+        # if self.explore_rate < 1:
+        #     checkpoint = torch.load(self.config['save_model_path'])
+        #     self.q_star.load_state_dict(checkpoint['model_state_dict'])
+        #     self.q_star.eval()
 
     def set_explore_rate(self, explore_rate):
         self.explore_rate = explore_rate
