@@ -10,7 +10,7 @@
     'gamma': 0.999,
     'eps_start': 0.9,
     'eps_end': 0.05,
-    'eps_decay': 200,
+    'eps_decay': 20,
     'target_update': 2,
     'save_every': 10,
     'save_model_path': 'model/model.pth'
