@@ -5,7 +5,7 @@
     'lr_decay': 20,
     'epoch': 50,
 
-    'total_episode_num': 5000,
+    'total_episode_num': 3000,
     'batch_size': 128,
     'gamma': 0.999,
     'eps_start': 0.9,

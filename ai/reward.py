@@ -130,11 +130,11 @@ def reward_function(board, action):
     reward = 0
     num = get_3(action)
     if num > 0:
-        reward += 10*num
+        reward += 10
     else:
-        reward -= 2*leave_2(action)
+        reward -= 3*leave_2(action)
     num = add_2(board, action)
     if num > 1:
-        reward += 1*num
+        reward += 1
     reward += 1*block_2(board, action)
     return reward
