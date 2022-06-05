@@ -1,14 +1,17 @@
 import yaml
 import torch
 import random
-from os.path import exists
 import copy
 import time
+import math
 import numpy as np
+from tqdm import tqdm
+from os.path import exists
 from collections import namedtuple, deque
 from framework.board import ChessBoard
 from framework.display import GUI
 from framework.player import HumanPlayer, AIPlayer
+from framework.utils import board_turn180
 from ai.network import DQN
 from ai.loss import MyLoss
 from ai.reward import reward_function
@@ -25,30 +28,34 @@ Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
 class ReplayMemory(object):
     def __init__(self, capacity):
-        self.memory = deque([],maxlen=capacity)
+        memory = deque([],maxlen=capacity)
 
     def push(self, *args):
-        self.memory.append(Transition(*args))
+        memory.append(Transition(*args))
 
     def sample(self, batch_size):
-        return random.sample(self.memory, batch_size)
+        return random.sample(memory, batch_size)
 
     def __len__(self):
-        return len(self.memory)
+        return len(memory)
 
 # game objects
 memory = ReplayMemory(10000)
 
 policy_net = DQN().to(device)  # Q*(s,a)
-target_net = DQN().to(device)
+optimizer = torch.optim.RMSprop(policy_net.parameters())
+
 if exists(config['save_model_path']):
     checkpoint = torch.load(config['save_model_path'])
     policy_net.load_state_dict(checkpoint['model_state_dict'])
-target_net.load_state_dict(policy_net.state_dict())
-target_net.eval()
+else:
+    state = {'model_state_dict': policy_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
+    torch.save(state, config['save_model_path'])
 policy_net.train()
 
-optimizer = torch.optim.RMSprop(policy_net.parameters())
+target_net = DQN().to(device)
+target_net.load_state_dict(policy_net.state_dict())
+target_net.eval()
 
 def optimize_model():
     global policy_net
@@ -121,3 +128,79 @@ gui = GUI()
 r_player = AIPlayer('r', config['eps_start'])
 b_player = AIPlayer('b', config['eps_start'])
 
+
+
+loss_history = []
+for i_episode in tqdm(range(config['total_episode_num'])):
+    chess_board.reset_board()
+    r_player.reset()
+    b_player.reset()
+    explore_rate = config['eps_end'] + (config['eps_start'] - config['eps_end']) * \
+        math.exp(-1. * i_episode / config['eps_decay'])
+    r_player.set_explore_rate(explore_rate)
+    b_player.set_explore_rate(explore_rate)
+    total_loss = 0  
+    red = True
+    b_move = False
+    cnt = 0
+
+    while not chess_board.done:
+        gui.check_event()
+        
+        if red:
+            gui.update(chess_board.board_states(), 'r')
+
+            r_player.update_board(chess_board.board_states())
+            if not r_player.check_moves():
+                chess_board.set_done('b')
+                break
+            posi, move = r_player.ai_action()
+            chess_board.move_piece(posi, move)
+            red = not red
+
+            r_state = r_player.current_board
+            r_action = chess_board.board_states()
+            r_reward = reward_function(r_action)
+
+            if b_move:
+                b_next_state = board_turn180(chess_board.board_states())
+                memory.push(b_state, b_action, b_next_state, b_reward)
+                loss = optimize_model()
+                total_loss += loss
+                cnt += 1
+            
+        else:
+            gui.update(chess_board.board_states(), 'b')
+
+            b_player.update_board(chess_board.board_states())
+            if not b_player.check_moves():
+                chess_board.set_done('r')
+                break
+            posi, move = b_player.ai_action()
+            chess_board.move_piece(posi, move)
+            b_move = True
+            red = not red
+
+            b_state = b_player.current_board
+            b_action = board_turn180(chess_board.board_states())
+            b_reward = reward_function(b_action)
+
+            r_next_state = chess_board.board_states()
+            memory.push(r_state, r_action, r_next_state, r_reward)
+            loss = optimize_model()
+            total_loss += loss
+            cnt += 1
+
+    print('Last episode loss is: ' + str(total_loss/cnt))
+    loss_history.append(total_loss/cnt)
+
+    if i_episode % config['target_update'] == 0:
+        target_net.load_state_dict(policy_net.state_dict())
+    if i_episode % config['save_every'] == 0:
+        save_path = config['save_model_path']
+        state = {'model_state_dict': target_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
+        torch.save(state, save_path)
+
+save_path = config['save_model_path']
+state = {'model_state_dict': policy_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
+torch.save(state, save_path)
