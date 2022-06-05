@@ -51,7 +51,7 @@ if exists(config['final_model_path']):
     policy_net.load_state_dict(checkpoint['model_state_dict'])
 else:
     state = {'model_state_dict': policy_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
-    torch.save(state, config['save_model_path'])
+    torch.save(state, config['final_model_path'])
 policy_net.train()
 
 target_net = DQN().to(device)
