@@ -99,7 +99,10 @@ def optimize_model():
             value = target_net(next_state, a)
             value = value.cpu().detach().numpy()[0][0]
             val_list.append(value)
-        max_val = max(val_list)
+        if len(val_list)>0:
+            max_val = max(val_list)
+        else:
+            max_val = 0
         next_values[i][0] = torch.tensor(max_val).to(device)
     next_values = (next_values * config['gamma']) + reward_batch
 
@@ -145,16 +148,17 @@ for i_episode in tqdm(range(config['total_episode_num'])):
     b_move = False
     cnt = 0
 
-    while True:
+    while not chess_board.done:
         gui.check_event()
         
         if red:
             gui.update(chess_board.board_states(), 'r')
 
             r_player.update_board(chess_board.board_states())
-            if not r_player.check_moves():
-                chess_board.set_done('b')
-                break
+            r_player.check_moves()
+            # if not r_player.check_moves():
+            #     chess_board.set_done('b')
+            #     break
             posi, move = r_player.ai_action()
             chess_board.move_piece(posi, move)
             if chess_board.done:
@@ -164,7 +168,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                     print(' Black Win!')
                 if chess_board.win == 't':
                     print(' Tie!')
-                break
+                print(chess_board.board_states())
             red = not red
 
             r_state = r_player.current_board
@@ -185,9 +189,10 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             gui.update(chess_board.board_states(), 'b')
 
             b_player.update_board(chess_board.board_states())
-            if not b_player.check_moves():
-                chess_board.set_done('r')
-                break
+            b_player.check_moves()
+            # if not b_player.check_moves():
+            #     chess_board.set_done('r')
+            #     break
             posi, move = b_player.ai_action()
             chess_board.move_piece(posi, move)
             if chess_board.done:
@@ -197,7 +202,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                     print(' Black Win!')
                 if chess_board.win == 't':
                     print(' Tie!')
-                break
+                print(chess_board.board_states())
             b_move = True
             red = not red
 
@@ -214,7 +219,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             total_loss += loss
             cnt += 1
 
-    print(' Last episode loss is: ' + str(total_loss/cnt))
+    print('Last episode loss is: ' + str(total_loss/cnt))
     loss_history.append(total_loss/cnt)
 
     if i_episode % config['target_update'] == 0:
