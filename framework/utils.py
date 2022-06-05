@@ -2,6 +2,16 @@ import numpy as np
 import h5py
 from os.path import exists
 
+def board_trans(board):
+    res = np.zeros((3,3))
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] >= 0:
+                res[i][j] = board[i][j]
+            else:
+                res[i][j] = 2
+    return res
+
 def board_to_key(board):
     key = tuple(map(tuple, board))
     return key

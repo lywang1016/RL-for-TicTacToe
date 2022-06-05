@@ -2,7 +2,6 @@ import yaml
 import torch
 import random
 import copy
-import time
 import math
 import numpy as np
 from tqdm import tqdm
@@ -11,7 +10,7 @@ from collections import namedtuple, deque
 from framework.board import ChessBoard
 from framework.display import GUI
 from framework.player import HumanPlayer, AIPlayer
-from framework.utils import board_turn180
+from framework.utils import board_turn180, board_trans
 from ai.network import DQN
 from ai.loss import MyLoss
 from ai.reward import reward_function
@@ -70,16 +69,16 @@ def optimize_model():
     state = torch.from_numpy(batch.state[0]).to(device)
     action = torch.from_numpy(batch.action[0]).to(device)
     reward = torch.tensor(batch.reward[0]).to(device)
-    state_batch = state.view(1, 1, 3, 3)
-    action_batch = action.view(1, 1, 3, 3)
-    reward_batch = reward.view(1, 1)
+    state_batch = state.float().view(1, 1, 3, 3)
+    action_batch = action.float().view(1, 1, 3, 3)
+    reward_batch = reward.float().view(1, 1)
     for i in range(1, config['batch_size']):
         state = torch.from_numpy(batch.state[i]).to(device)
         action = torch.from_numpy(batch.action[i]).to(device)
         reward = torch.tensor(batch.reward[i]).to(device)
-        state_batch = torch.cat((state_batch, state.view(1, 1, 3, 3)), dim=0)
-        action_batch = torch.cat((action_batch, action.view(1, 1, 3, 3)), dim=0)
-        reward_batch = torch.cat((reward_batch, reward.view(1, 1)), dim=0)
+        state_batch = torch.cat((state_batch, state.float().view(1, 1, 3, 3)), dim=0)
+        action_batch = torch.cat((action_batch, action.float().view(1, 1, 3, 3)), dim=0)
+        reward_batch = torch.cat((reward_batch, reward.float().view(1, 1)), dim=0)
 
     next_values = torch.zeros((config['batch_size'],1), device=device)
     for i in range(config['batch_size']):
@@ -92,7 +91,7 @@ def optimize_model():
                     temp[i][j] = 1
                     actions.append(temp)
         next_state = torch.from_numpy(next_state).to(device)
-        next_state = next_state.view(1, 1, 3, 3)
+        next_state = next_state.float().view(1, 1, 3, 3)
         val_list = []
         for action in actions:
             a = torch.from_numpy(action).to(device)
@@ -122,6 +121,7 @@ def optimize_model():
 
 
 
+
 chess_board = ChessBoard()
 gui = GUI()
 
@@ -145,7 +145,7 @@ for i_episode in tqdm(range(config['total_episode_num'])):
     b_move = False
     cnt = 0
 
-    while not chess_board.done:
+    while True:
         gui.check_event()
         
         if red:
@@ -157,14 +157,25 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                 break
             posi, move = r_player.ai_action()
             chess_board.move_piece(posi, move)
+            if chess_board.done:
+                if chess_board.win == 'r':
+                    print(' Red Win!')
+                if chess_board.win == 'b':
+                    print(' Black Win!')
+                if chess_board.win == 't':
+                    print(' Tie!')
+                break
             red = not red
 
             r_state = r_player.current_board
             r_action = chess_board.board_states()
             r_reward = reward_function(r_action)
+            r_state = board_trans(r_state)
+            r_action = board_trans(r_action)
 
             if b_move:
                 b_next_state = board_turn180(chess_board.board_states())
+                b_next_state = board_trans(b_next_state)
                 memory.push(b_state, b_action, b_next_state, b_reward)
                 loss = optimize_model()
                 total_loss += loss
@@ -179,20 +190,31 @@ for i_episode in tqdm(range(config['total_episode_num'])):
                 break
             posi, move = b_player.ai_action()
             chess_board.move_piece(posi, move)
+            if chess_board.done:
+                if chess_board.win == 'r':
+                    print(' Red Win!')
+                if chess_board.win == 'b':
+                    print(' Black Win!')
+                if chess_board.win == 't':
+                    print(' Tie!')
+                break
             b_move = True
             red = not red
 
             b_state = b_player.current_board
             b_action = board_turn180(chess_board.board_states())
             b_reward = reward_function(b_action)
+            b_state = board_trans(b_state)
+            b_action = board_trans(b_action)
 
             r_next_state = chess_board.board_states()
+            r_next_state = board_trans(r_next_state)
             memory.push(r_state, r_action, r_next_state, r_reward)
             loss = optimize_model()
             total_loss += loss
             cnt += 1
 
-    print('Last episode loss is: ' + str(total_loss/cnt))
+    print(' Last episode loss is: ' + str(total_loss/cnt))
     loss_history.append(total_loss/cnt)
 
     if i_episode % config['target_update'] == 0:

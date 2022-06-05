@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from os.path import exists
 from heapq import heapify, heappop, heappush
-from framework.utils import board_turn180, rotate_action
+from framework.utils import board_turn180, rotate_action, board_trans
 from framework.constant import piece_values
 from ai.network import DQN
 
@@ -115,21 +115,23 @@ class AIPlayer(Player):
         return posi, value
 
     def __exploit_action(self):
-        state = torch.from_numpy(copy.deepcopy(self.current_board)).to(self.device)
+        temp = board_trans(copy.deepcopy(self.current_board))
+        state = torch.from_numpy(temp).to(self.device)
         if str(self.device) == 'cuda':
-            state = state.view(1, 1, 3, 3).type(torch.cuda.FloatTensor)
+            state = state.float().view(1, 1, 3, 3).type(torch.cuda.FloatTensor)
         else:
-            state = state.view(1, 1, 3, 3).type(torch.FloatTensor)
+            state = state.float().view(1, 1, 3, 3).type(torch.FloatTensor)
         queue = []
         heapify(queue)
         for posi in self.all_move:
             next_board = copy.deepcopy(self.current_board)
             next_board[posi[0]][posi[1]] = 1
-            action = torch.from_numpy(next_board).to(self.device)
+            temp = board_trans(next_board)
+            action = torch.from_numpy(temp).to(self.device)
             if str(self.device) == 'cuda':
-                action = action.view(1, 1, 3, 3).type(torch.cuda.FloatTensor)
+                action = action.float().view(1, 1, 3, 3).type(torch.cuda.FloatTensor)
             else:
-                action = action.view(1, 1, 3, 3).type(torch.FloatTensor)
+                action = action.float().view(1, 1, 3, 3).type(torch.FloatTensor)
             win_rate = self.q_star(state, action)
             win_rate = win_rate.cpu().detach().numpy()[0][0]
             heappush(queue, (-win_rate, (posi, 1)))
