@@ -7,7 +7,7 @@
 
     'total_episode_num': 5000,
     'batch_size': 8,
-    'gamma': 0.6,
+    'gamma': 0.8,
     'eps_start': 0.9,
     'eps_end': 0.05,
     'eps_decay': 200,
