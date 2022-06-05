@@ -22,47 +22,49 @@ def two_in_line(input_list):
     return 0
 
 def get_3(action):
+    add_num = 0
     for i in range(3):
         if action[i][0]==action[i][1] and action[i][1]==action[i][2]:
             if action[i][0]==piece_values['r_piece']:
-                return True
+                add_num += 1
     for i in range(3):
         if action[0][i]==action[1][i] and action[1][i]==action[2][i]:
             if action[0][i]==piece_values['r_piece']:
-                return True
+                add_num += 1
     v1 = action[0][0]
     v2 = action[1][1]
     v3 = action[2][2]
     if v1==v2 and v2==v3:
         if v1==piece_values['r_piece']:
-            return True
+            add_num += 1
     v1 = action[0][2]
     v3 = action[2][0]
     if v1==v2 and v2==v3:
         if v1==piece_values['r_piece']:
-            return True
-    return False
+            add_num += 1
+    return add_num
 
 def leave_2(action):
+    add_num = 0
     for i in range(3):
         input_list = [action[i][0], action[i][1], action[i][2]]
         val = two_in_line(input_list)
         if val == -1:
-            return True
+            add_num += 1
     for i in range(3):
         input_list = [action[0][i], action[1][i], action[2][i]]
         val = two_in_line(input_list)
         if val == -1:
-            return True
+            add_num += 1
     input_list = [action[0][2], action[1][1], action[2][0]]
     val = two_in_line(input_list)
     if val == -1:
-        return True
+        add_num += 1
     input_list = [action[0][0], action[1][1], action[2][2]]
     val = two_in_line(input_list)
     if val == -1:
-        return True
-    return False
+        add_num += 1
+    return add_num
 
 def add_2(board, action):
     add_num = 0
@@ -125,11 +127,12 @@ def block_2(board, action):
     return add_num
 
 def reward_function(board, action):
-    if get_3(action):
-        return 10
-    if leave_2(action):
-        return -10
     reward = 0
+    num = get_3(action)
+    if num > 0:
+        reward += 10*num
+    else:
+        reward -= 10*leave_2(action)
     reward += 1*add_2(board, action)
-    reward += 5*block_2(board, action)
+    reward += 2*block_2(board, action)
     return reward

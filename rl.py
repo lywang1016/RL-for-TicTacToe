@@ -40,7 +40,7 @@ class ReplayMemory(object):
         return len(self.memory)
 
 # game objects
-memory = ReplayMemory(10000)
+memory = ReplayMemory(5000)
 
 policy_net = DQN().to(device)  # Q*(s,a)
 optimizer = torch.optim.RMSprop(policy_net.parameters())
