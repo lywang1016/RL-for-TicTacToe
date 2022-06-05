@@ -4,6 +4,7 @@ import random
 import copy
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 from os.path import exists
 from collections import namedtuple, deque
@@ -45,8 +46,8 @@ memory = ReplayMemory(5000)
 policy_net = DQN().to(device)  # Q*(s,a)
 optimizer = torch.optim.RMSprop(policy_net.parameters())
 
-if exists(config['save_model_path']):
-    checkpoint = torch.load(config['save_model_path'])
+if exists(config['final_model_path']):
+    checkpoint = torch.load(config['final_model_path'])
     policy_net.load_state_dict(checkpoint['model_state_dict'])
 else:
     state = {'model_state_dict': policy_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
@@ -244,6 +245,16 @@ for i_episode in tqdm(range(config['total_episode_num'])):
         state = {'model_state_dict': target_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
         torch.save(state, save_path)
 
-save_path = config['save_model_path']
+save_path = config['final_model_path']
 state = {'model_state_dict': policy_net.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}
 torch.save(state, save_path)
+
+
+episode = np.linspace(start=1, stop=config['total_episode_num'], num=config['total_episode_num'])
+
+plt.figure()
+plt.plot(episode, loss_history, linewidth=2.0)
+plt.xlabel('episode')
+plt.ylabel('loss')
+plt.title('Loss')
+plt.show()

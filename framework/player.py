@@ -70,12 +70,12 @@ class AIPlayer(Player):
         self.all_move = {}
         with open('ai/config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
-        if not exists(self.config['save_model_path']):  # random action only
+        if not exists(self.config['final_model_path']):  # random action only
             self.explore_rate = 1
         if self.explore_rate < 1:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             self.q_star = DQN().to(self.device)
-            checkpoint = torch.load(self.config['save_model_path'])
+            checkpoint = torch.load(self.config['final_model_path'])
             self.q_star.load_state_dict(checkpoint['model_state_dict'])
             self.q_star.eval()
 
@@ -85,13 +85,13 @@ class AIPlayer(Player):
         self.current_piece_posi = None
         self.all_move = {}
         # if self.explore_rate < 1:
-        #     checkpoint = torch.load(self.config['save_model_path'])
+        #     checkpoint = torch.load(self.config['final_model_path'])
         #     self.q_star.load_state_dict(checkpoint['model_state_dict'])
         #     self.q_star.eval()
 
     def set_explore_rate(self, explore_rate):
         self.explore_rate = explore_rate
-        if not exists(self.config['save_model_path']):  # random action only
+        if not exists(self.config['final_model_path']):  # random action only
             self.explore_rate = 1
 
     def update_board(self, board):

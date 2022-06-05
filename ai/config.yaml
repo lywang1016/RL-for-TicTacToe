@@ -5,7 +5,7 @@
     'lr_decay': 20,
     'epoch': 50,
 
-    'total_episode_num': 20000,
+    'total_episode_num': 5000,
     'batch_size': 8,
     'gamma': 0.6,
     'eps_start': 0.9,
@@ -14,4 +14,5 @@
     'target_update': 2,
     'save_every': 10,
     'save_model_path': 'model/model.pth'
+    'final_model_path': 'model/final_model.pth'
 }
