@@ -156,9 +156,8 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
             r_player.update_board(chess_board.board_states())
             r_player.check_moves()
-            # if not r_player.check_moves():
-            #     chess_board.set_done('b')
-            #     break
+            r_player.q_star.load_state_dict(policy_net.state_dict())
+            r_player.q_star.eval()
             posi, move = r_player.ai_action()
             chess_board.move_piece(posi, move)
 
@@ -198,9 +197,8 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
             b_player.update_board(chess_board.board_states())
             b_player.check_moves()
-            # if not b_player.check_moves():
-            #     chess_board.set_done('r')
-            #     break
+            b_player.q_star.load_state_dict(policy_net.state_dict())
+            b_player.q_star.eval()
             posi, move = b_player.ai_action()
             chess_board.move_piece(posi, move)
             b_move = True
