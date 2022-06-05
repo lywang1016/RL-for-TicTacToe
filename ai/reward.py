@@ -13,11 +13,11 @@ def two_in_line(input_list):
         return 1
     if input_list[2] == input_list[1] and input_list[1] == piece_values['r_piece'] and input_list[0] == 0:
         return 1
-    if input_list[0] == input_list[1] and input_list[1] == piece_values['r_piece'] and input_list[2] == piece_values['b_piece']:
+    if input_list[0] == input_list[1] and input_list[1] == piece_values['b_piece'] and input_list[2] == piece_values['r_piece']:
         return 2
-    if input_list[0] == input_list[2] and input_list[2] == piece_values['r_piece'] and input_list[1] == piece_values['b_piece']:
+    if input_list[0] == input_list[2] and input_list[2] == piece_values['b_piece'] and input_list[1] == piece_values['r_piece']:
         return 2
-    if input_list[2] == input_list[1] and input_list[1] == piece_values['r_piece'] and input_list[0] == piece_values['b_piece']:
+    if input_list[2] == input_list[1] and input_list[1] == piece_values['b_piece'] and input_list[0] == piece_values['r_piece']:
         return 2
     return 0
 
