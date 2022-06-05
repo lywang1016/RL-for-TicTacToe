@@ -13,6 +13,6 @@
     'eps_decay': 200,
     'target_update': 2,
     'save_every': 10,
-    'save_model_path': 'model/model.pth'
+    'save_model_path': 'model/model.pth',
     'final_model_path': 'model/final_model.pth'
 }
