@@ -312,6 +312,8 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             red = not red
 
     print('Last episode loss is: ' + str(total_loss/cnt))
+    print('Last episode red reward is: ' + str(r_reward_total/cnt))
+    print('Last episode black reward is: ' + str(b_reward_total/cnt))
     loss_history.append(total_loss/cnt)
     r_reward_history.append(r_reward_total/cnt)
     b_reward_history.append(b_reward_total/cnt)
