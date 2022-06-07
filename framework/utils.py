@@ -2,6 +2,36 @@ import numpy as np
 import h5py
 from os.path import exists
 
+def board_rotate_90(board_in):
+    board = np.zeros((3, 3))
+    for i in range(3):
+        board[:,i] = board_in[2-i,:]
+    return board
+
+def board_rotate_180(board_in):
+    board = board_in[::-1,::-1]
+    return board
+
+def board_rotate_270(board_in):
+    board = np.zeros((3, 3))
+    for i in range(3):
+        board[i,:] = board_in[:,2-i]
+    return board
+
+def board_rotate_ud(board_in):
+    board = np.zeros((3, 3))
+    board[0,:] = board_in[2,:]
+    board[1,:] = board_in[1,:]
+    board[2,:] = board_in[0,:]
+    return board
+
+def board_rotate_lr(board_in):
+    board = np.zeros((3, 3))
+    board[:,0] = board_in[:,2]
+    board[:,1] = board_in[:,1]
+    board[:,2] = board_in[:,0]
+    return board
+
 def board_trans(board):
     res = np.zeros((3,3))
     for i in range(3):

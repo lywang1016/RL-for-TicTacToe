@@ -12,6 +12,7 @@ from framework.board import ChessBoard
 from framework.display import GUI
 from framework.player import HumanPlayer, AIPlayer
 from framework.utils import board_turn180, board_trans
+from framework.utils import board_rotate_90, board_rotate_180, board_rotate_270, board_rotate_ud, board_rotate_lr
 from ai.network import DQN
 from ai.loss import MyLoss
 from ai.reward import reward_function
@@ -41,7 +42,7 @@ class ReplayMemory(object):
         return len(self.memory)
 
 # game objects
-memory = ReplayMemory(5000)
+memory = ReplayMemory(10000)
 
 policy_net = DQN().to(device)  # Q*(s,a)
 optimizer = torch.optim.RMSprop(policy_net.parameters())
@@ -70,33 +71,42 @@ def optimize_model():
     state = torch.from_numpy(batch.state[0]).to(device)
     action = torch.from_numpy(batch.action[0]).to(device)
     reward = torch.tensor(batch.reward[0]).to(device)
-    state_batch = state.float().view(1, 1, 3, 3)
-    action_batch = action.float().view(1, 1, 3, 3)
+    state_batch = state.float().view(1, 6, 3, 3)
+    action_batch = action.float().view(1, 6, 3, 3)
     reward_batch = reward.float().view(1, 1)
     for i in range(1, config['batch_size']):
         state = torch.from_numpy(batch.state[i]).to(device)
         action = torch.from_numpy(batch.action[i]).to(device)
         reward = torch.tensor(batch.reward[i]).to(device)
-        state_batch = torch.cat((state_batch, state.float().view(1, 1, 3, 3)), dim=0)
-        action_batch = torch.cat((action_batch, action.float().view(1, 1, 3, 3)), dim=0)
+        state_batch = torch.cat((state_batch, state.float().view(1, 6, 3, 3)), dim=0)
+        action_batch = torch.cat((action_batch, action.float().view(1, 6, 3, 3)), dim=0)
         reward_batch = torch.cat((reward_batch, reward.float().view(1, 1)), dim=0)
 
     next_values = torch.zeros((config['batch_size'],1), device=device)
     for i in range(config['batch_size']):
-        next_state = batch.next_state[i]
+        next_state = batch.next_state[i][0]
         actions = []
         for i in range(3):
             for j in range(3):
                 if next_state[i][j] == 0:
                     temp = copy.deepcopy(next_state)
                     temp[i][j] = 1
-                    actions.append(temp)
-        next_state = torch.from_numpy(next_state).to(device)
-        next_state = next_state.float().view(1, 1, 3, 3)
+
+                    temp_all = np.zeros((6,3,3))
+                    temp_all[0] = temp
+                    temp_all[1] = board_rotate_90(temp)
+                    temp_all[2] = board_rotate_180(temp)
+                    temp_all[3] = board_rotate_270(temp)
+                    temp_all[4] = board_rotate_ud(temp)
+                    temp_all[5] = board_rotate_lr(temp)
+
+                    actions.append(temp_all)
+        next_state = torch.from_numpy(batch.next_state[i]).to(device)
+        next_state = next_state.float().view(1, 6, 3, 3)
         val_list = []
         for action in actions:
             a = torch.from_numpy(action).to(device)
-            a = a.float().view(1, 1, 3, 3)
+            a = a.float().view(1, 6, 3, 3)
             value = target_net(next_state, a)
             value = value.cpu().detach().numpy()[0][0]
             val_list.append(value)
@@ -136,6 +146,8 @@ b_player = AIPlayer('b', config['eps_start'])
 
 
 loss_history = []
+r_reward_history = []
+b_reward_history = []
 for i_episode in tqdm(range(config['total_episode_num'])):
     chess_board.reset_board()
     r_player.reset()
@@ -145,6 +157,8 @@ for i_episode in tqdm(range(config['total_episode_num'])):
     r_player.set_explore_rate(explore_rate)
     b_player.set_explore_rate(explore_rate)
     total_loss = 0  
+    r_reward_total = 0
+    b_reward_total = 0
     red = True
     b_move = False
     cnt = 0
@@ -165,8 +179,25 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             r_state = r_player.current_board
             r_action = chess_board.board_states()
             r_reward = reward_function(r_state, r_action)
+            r_reward_total += r_reward
             r_state = board_trans(r_state)
             r_action = board_trans(r_action)
+
+            r_state_all = np.zeros((6,3,3))
+            r_state_all[0] = r_state
+            r_state_all[1] = board_rotate_90(r_state)
+            r_state_all[2] = board_rotate_180(r_state)
+            r_state_all[3] = board_rotate_270(r_state)
+            r_state_all[4] = board_rotate_ud(r_state)
+            r_state_all[5] = board_rotate_lr(r_state)
+
+            r_action_all = np.zeros((6,3,3))
+            r_action_all[0] = r_action
+            r_action_all[1] = board_rotate_90(r_action)
+            r_action_all[2] = board_rotate_180(r_action)
+            r_action_all[3] = board_rotate_270(r_action)
+            r_action_all[4] = board_rotate_ud(r_action)
+            r_action_all[5] = board_rotate_lr(r_action)
 
             if chess_board.done:
                 if chess_board.win == 'r':
@@ -179,7 +210,14 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
                 r_next_state = chess_board.board_states()
                 r_next_state = board_trans(r_next_state)
-                memory.push(r_state, r_action, r_next_state, r_reward)
+                r_next_state_all = np.zeros((6,3,3))
+                r_next_state_all[0] = r_next_state
+                r_next_state_all[1] = board_rotate_90(r_next_state)
+                r_next_state_all[2] = board_rotate_180(r_next_state)
+                r_next_state_all[3] = board_rotate_270(r_next_state)
+                r_next_state_all[4] = board_rotate_ud(r_next_state)
+                r_next_state_all[5] = board_rotate_lr(r_next_state)
+                memory.push(r_state_all, r_action_all, r_next_state_all, r_reward)
                 loss = optimize_model()
                 total_loss += loss
                 cnt += 1
@@ -187,7 +225,14 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             if b_move:
                 b_next_state = board_turn180(chess_board.board_states())
                 b_next_state = board_trans(b_next_state)
-                memory.push(b_state, b_action, b_next_state, b_reward)
+                b_next_state_all = np.zeros((6,3,3))
+                b_next_state_all[0] = b_next_state
+                b_next_state_all[1] = board_rotate_90(b_next_state)
+                b_next_state_all[2] = board_rotate_180(b_next_state)
+                b_next_state_all[3] = board_rotate_270(b_next_state)
+                b_next_state_all[4] = board_rotate_ud(b_next_state)
+                b_next_state_all[5] = board_rotate_lr(b_next_state)
+                memory.push(b_state_all, b_action_all, b_next_state_all, b_reward)
                 loss = optimize_model()
                 total_loss += loss
                 cnt += 1
@@ -207,8 +252,25 @@ for i_episode in tqdm(range(config['total_episode_num'])):
             b_state = b_player.current_board
             b_action = board_turn180(chess_board.board_states())
             b_reward = reward_function(b_state, b_action)
+            b_reward_total += b_reward
             b_state = board_trans(b_state)
             b_action = board_trans(b_action)
+
+            b_state_all = np.zeros((6,3,3))
+            b_state_all[0] = b_state
+            b_state_all[1] = board_rotate_90(b_state)
+            b_state_all[2] = board_rotate_180(b_state)
+            b_state_all[3] = board_rotate_270(b_state)
+            b_state_all[4] = board_rotate_ud(b_state)
+            b_state_all[5] = board_rotate_lr(b_state)
+
+            b_action_all = np.zeros((6,3,3))
+            b_action_all[0] = b_action
+            b_action_all[1] = board_rotate_90(b_action)
+            b_action_all[2] = board_rotate_180(b_action)
+            b_action_all[3] = board_rotate_270(b_action)
+            b_action_all[4] = board_rotate_ud(b_action)
+            b_action_all[5] = board_rotate_lr(b_action)
 
             if chess_board.done:
                 if chess_board.win == 'r':
@@ -221,14 +283,28 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
                 b_next_state = board_turn180(chess_board.board_states())
                 b_next_state = board_trans(b_next_state)
-                memory.push(b_state, b_action, b_next_state, b_reward)
+                b_next_state_all = np.zeros((6,3,3))
+                b_next_state_all[0] = b_next_state
+                b_next_state_all[1] = board_rotate_90(b_next_state)
+                b_next_state_all[2] = board_rotate_180(b_next_state)
+                b_next_state_all[3] = board_rotate_270(b_next_state)
+                b_next_state_all[4] = board_rotate_ud(b_next_state)
+                b_next_state_all[5] = board_rotate_lr(b_next_state)
+                memory.push(b_state_all, b_action_all, b_next_state_all, b_reward)
                 loss = optimize_model()
                 total_loss += loss
                 cnt += 1
            
             r_next_state = chess_board.board_states()
             r_next_state = board_trans(r_next_state)
-            memory.push(r_state, r_action, r_next_state, r_reward)
+            r_next_state_all = np.zeros((6,3,3))
+            r_next_state_all[0] = r_next_state
+            r_next_state_all[1] = board_rotate_90(r_next_state)
+            r_next_state_all[2] = board_rotate_180(r_next_state)
+            r_next_state_all[3] = board_rotate_270(r_next_state)
+            r_next_state_all[4] = board_rotate_ud(r_next_state)
+            r_next_state_all[5] = board_rotate_lr(r_next_state)
+            memory.push(r_state_all, r_action_all, r_next_state_all, r_reward)
             loss = optimize_model()
             total_loss += loss
             cnt += 1 
@@ -237,6 +313,8 @@ for i_episode in tqdm(range(config['total_episode_num'])):
 
     print('Last episode loss is: ' + str(total_loss/cnt))
     loss_history.append(total_loss/cnt)
+    r_reward_history.append(r_reward_total/cnt)
+    b_reward_history.append(b_reward_total/cnt)
 
     if i_episode % config['target_update'] == 0:
         target_net.load_state_dict(policy_net.state_dict())
@@ -257,4 +335,17 @@ plt.plot(episode, loss_history, linewidth=2.0)
 plt.xlabel('episode')
 plt.ylabel('loss')
 plt.title('Loss')
+
+plt.figure()
+plt.plot(episode, r_reward_history, linewidth=2.0)
+plt.xlabel('episode')
+plt.ylabel('Red Reward')
+plt.title('Reward')
+
+plt.figure()
+plt.plot(episode, b_reward_history, linewidth=2.0)
+plt.xlabel('episode')
+plt.ylabel('Black Reward')
+plt.title('Reward')
+
 plt.show()

@@ -4,9 +4,9 @@ import torch.nn as nn
 class DQN(nn.Module):
     def __init__(self, h=3, w=3, outputs=1):
         super(DQN, self).__init__()
-        self.conv1 = nn.Conv2d(2, 8, kernel_size=2, stride=1, padding=1)
-        self.bn1 = nn.BatchNorm2d(8)
-        self.conv2 = nn.Conv2d(8, 32, kernel_size=2, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(12, 32, kernel_size=2, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(32)
+        self.conv2 = nn.Conv2d(32, 32, kernel_size=2, stride=1, padding=1)
         self.bn2 = nn.BatchNorm2d(32)
         self.conv3 = nn.Conv2d(32, 32, kernel_size=2, stride=1, padding=1)
         self.bn3 = nn.BatchNorm2d(32)
@@ -31,8 +31,8 @@ class DQN(nn.Module):
 
     def forward(self, state, action):
         batch_size = state.shape[0]
-        x_state = state.view(batch_size, 1, 3, 3)
-        x_action = action.view(batch_size, 1, 3, 3)
+        x_state = state.view(batch_size, 6, 3, 3)
+        x_action = action.view(batch_size, 6, 3, 3)
         x = torch.cat((x_state, x_action), 1)
         x = self.relu(self.bn1(self.conv1(x)))
         x = self.relu(self.bn2(self.conv2(x)))
