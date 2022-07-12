@@ -7,8 +7,10 @@ from os.path import exists
 from heapq import heapify, heappop, heappush
 from framework.utils import board_turn180, rotate_action, board_trans
 from framework.utils import board_rotate_90, board_rotate_180, board_rotate_270, board_rotate_ud, board_rotate_lr
-from framework.constant import piece_values
+from framework.constant import piece_values, action2posi
 from ai.network import DQN
+from min_max_test.board_test import Board
+from min_max_test.player_test import aiPlayer
 
 class Player():
     def __init__(self, color):
@@ -167,3 +169,94 @@ class AIPlayer(Player):
             else:
                 return self.__random_action()
 
+
+
+class MinMaxPlayer(Player):
+    def __init__(self, color):
+        self.color = color
+        self.faction = 1
+        self.player = aiPlayer('X')
+        if color == 'b':
+            self.faction = -1
+            self.player = aiPlayer('O')
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.all_move = {}
+        
+    
+    def reset(self):
+        self.current_board = None
+        self.current_piece_value = 0
+        self.current_piece_posi = None
+        self.all_move = {}
+
+    def minmax_action(self):
+        board = Board()
+        idx = 0
+        for i in range(3):
+            for j in range(3):
+                if self.current_board[i][j] == 0:
+                    board._board[idx] = '-'
+                if self.current_board[i][j] == 1:
+                    board._board[idx] = 'X'
+                if self.current_board[i][j] == -1:
+                    board._board[idx] = 'O'
+                idx += 1
+
+        action = self.player.think(board)
+        posi = action2posi[action]
+        return posi, self.faction
+
+    # def minmax_action(self):
+    #     if self.color == 'b':       # rotate board
+    #         op_color = 'r'
+    #     else:
+    #         op_color = 'b'
+    #     op_player = MinMaxPlayer(op_color) # 假想的敌人
+    #     chess_board = ChessBoard()
+    #     chess_board.load_board(self.current_board)
+    #     _,posi =self.minimax(chess_board, op_player)
+    #     return posi, self.faction
+
+    # def minimax(self, board, op_player, depth=0):
+    #     if self.faction == 'b':
+    #         bestVal = -10
+    #     else:
+    #         bestVal = 10
+
+    #     board.check_done()
+    #     if board.done:
+    #         # print('GET HERE!!!!!!!!!!!!!!!')
+    #         if board.win == 'r':
+    #             # "X"胜利
+    #             return -10 + depth, None
+    #         elif board.win == 'b':
+    #             # "O"胜利
+    #             return 10 - depth, None
+    #         else:
+    #             # 平局
+    #             return 0,None
+        
+    #     # 遍历合法走法 action = posi
+    #     all_move = board.get_legal_actions(self.color)
+    #     # for key in self.all_move:
+    #     #     bestAction = key
+    #     # print(len(all_move))
+    #     for action in all_move:
+    #         board.move_piece(action, self.faction, record = False)
+    #         # print(action)
+    #         val,_ = op_player.minimax(board,self,depth+1) # 切换到假想敌
+    #         print('val = ' + str(val))
+    #         print('depth = ' + str(depth))
+    #         board.unmove(action) # 撤销走法，回溯
+
+    #         if self.faction == 1:
+    #             if val >= bestVal: # Max
+    #                 bestVal,bestAction = val,action
+    #                 # print('GET HERE!')
+    #         else: # Min
+    #             if val <= bestVal:
+    #                 bestVal,bestAction = val,action
+    #                 # print('GET HERE!!')
+    #     return bestVal,bestAction

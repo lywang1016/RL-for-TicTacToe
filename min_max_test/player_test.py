@@ -1,9 +1,9 @@
 #! /usr/bin/enc python
 # -*- coding: utf-8 -*-
 
-from board_test import Board
+from min_max_test.board_test import Board
 
-class Player(object):
+class Player1(object):
     """玩家"""
     def __init__(self,take='X'):
         """人类玩家执'X'"""
@@ -15,7 +15,7 @@ class Player(object):
     def move(self,board,action):
         board._move(action,self.take)
 
-class HumanPlayer(Player):
+class HumanPlayer1(Player1):
     """人类玩家"""
     def __init__(self,take):
         super().__init__(take) # 继承，默认执"X"
@@ -29,7 +29,7 @@ class HumanPlayer(Player):
             else:
                 print("错误，非法输入，请重新选择")
 
-class AIPlayer(Player):
+class aiPlayer(Player1):
     """电脑"""
     def __init__(self,take):
         super().__init__(take)
@@ -37,7 +37,7 @@ class AIPlayer(Player):
     def think(self,board):
         print("等待对手落子...")
         take = ['X','O'][self.take=='X'] # 若take是X,此时take取O,否则取X
-        player = AIPlayer(take) # 假想的敌人
+        player = aiPlayer(take) # 假想的敌人
         _,action =self.minimax(board,player)
         return action
 

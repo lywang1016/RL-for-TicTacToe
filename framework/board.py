@@ -98,24 +98,44 @@ class ChessBoard:
     
     def board_states(self):
         return copy.deepcopy(self.board)
+
+    def get_legal_actions(self, color):
+        value = 1
+        if color == 'b':
+            value = -1
+        all_move = {}
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    all_move[(i,j)] = value
+        return all_move
     
-    def move_piece(self, position, value):
-        self.action_history.append((position[0], position[1], value))
+    def move_piece(self, position, value, record = True):
+        if record:
+            self.action_history.append((position[0], position[1], value))
 
-        if self.red:
-            self.red_history.append(board_to_key(self.board_states()))
+            if self.red:
+                self.red_history.append(board_to_key(self.board_states()))
+            else:
+                self.black_history.append(board_to_key(board_turn180(self.board_states())))
+
+            if self.board[position[0]][position[1]] == 0:
+                self.board[position[0]][position[1]] = value
+            self.check_done()
+
+            if self.red:
+                self.red_action_board.append(board_to_key(self.board_states()))
+            else:
+                self.black_action_board.append(board_to_key(board_turn180(self.board_states())))
+            self.red = not self.red
         else:
-            self.black_history.append(board_to_key(board_turn180(self.board_states())))
-
-        if self.board[position[0]][position[1]] == 0:
-            self.board[position[0]][position[1]] = value
-        self.check_done()
-
-        if self.red:
-            self.red_action_board.append(board_to_key(self.board_states()))
-        else:
-            self.black_action_board.append(board_to_key(board_turn180(self.board_states())))
-        self.red = not self.red
+            if self.board[position[0]][position[1]] == 0:
+                self.board[position[0]][position[1]] = value
+    
+    def unmove(self, position):
+        self.board[position[0]][position[1]] = 0
+        self.win = None
+        self.done = False
 
     def fill_dataset(self):
         red_len = len(self.red_history)

@@ -12,9 +12,9 @@ class GAME(object):
     # 生产玩家
     def mk_player(self,p,take='X'):
         if p == 0 :
-            return HumanPlayer(take) # 人类玩家
+            return HumanPlayer1(take) # 人类玩家
         else:
-            return AIPlayer(take) # AI玩家
+            return aiPlayer(take) # AI玩家
 
     # 交换玩家 (轮流下棋)
     def switch_player(self,player1,player2):
