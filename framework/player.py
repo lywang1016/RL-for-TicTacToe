@@ -207,6 +207,9 @@ class MinMaxPlayer(Player):
         action = self.player.think(board)
         posi = action2posi[action]
         return posi, self.faction
+    
+    def ai_action(self):
+        return self.minmax_action()
 
     # def minmax_action(self):
     #     if self.color == 'b':       # rotate board
