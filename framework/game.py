@@ -47,6 +47,18 @@ class Game():
             self.gui = GUI()
             self.r_player = MinMaxPlayer('r')
             self.b_player = HumanPlayer('b')
+        if r_type == 'ai' and b_type == 'minmax':       #  ai vs MinMax AI
+            if self.if_gui:
+                self.gui = GUI()
+            self.ai_explore_rate = ai_explore_rate 
+            self.r_player = AIPlayer('r', self.ai_explore_rate)
+            self.b_player = MinMaxPlayer('b')
+        if r_type == 'minmax' and b_type == 'ai':       #  MinMax AI vs ai
+            if self.if_gui:
+                self.gui = GUI()
+            self.ai_explore_rate = ai_explore_rate 
+            self.r_player = MinMaxPlayer('r')
+            self.b_player = AIPlayer('b', self.ai_explore_rate)
     
     def reset(self):
         self.chess_board.reset_board()
@@ -67,6 +79,10 @@ class Game():
             self.__human_minmax_episode()
         if self.r_type == 'minmax' and self.b_type == 'human':       #  MinMax AI vs human 
             self.__human_minmax_episode()
+        if self.r_type == 'ai' and self.b_type == 'minmax':       #  ai vs MinMax AI
+            self.__ai_minmax_episode()
+        if self.r_type == 'minmax' and self.b_type == 'ai':       #  MinMax AI vs ai
+            self.__minmax_ai_episode()
             
         # if self.r_type == 'human' and self.b_type == 'human':   # human vs human
         #     self.__human_human_episode()
@@ -74,6 +90,92 @@ class Game():
         #     self.__human_ai_episode()
         # else:                                                   # AI vs AI
         #     self.__ai_ai_episode()
+
+    def __minmax_ai_episode(self):
+        self.reset()
+        while not self.chess_board.done:
+            if self.if_gui:
+                if self.red:
+                    self.gui.update(self.chess_board.board_states(), 'r')
+                else:
+                    self.gui.update(self.chess_board.board_states(), 'b')
+                time.sleep(self.gui_update)
+                info, position = self.gui.check_event()
+                if info == 'reset':
+                    print('reset')
+                    break
+
+            if self.red:
+                self.r_player.update_board(self.chess_board.board_states())
+                if not self.r_player.check_moves():
+                    self.chess_board.set_done('b')
+                    break
+                posi, move = self.r_player.minmax_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+            else:
+                self.b_player.update_board(self.chess_board.board_states())
+                if not self.b_player.check_moves():
+                    self.chess_board.set_done('r')
+                    break
+                posi, move = self.b_player.ai_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+
+        if self.chess_board.win == 'r':
+            print('Red Win!')
+        if self.chess_board.win == 'b':
+            print('Black Win!')
+        if self.chess_board.win == 't':
+            print('Tie!')
+
+        if self.if_record:
+            self.chess_board.save_csv()
+        if self.if_dataset:
+            self.chess_board.fill_dataset()
+
+    def __ai_minmax_episode(self):
+        self.reset()
+        while not self.chess_board.done:
+            if self.if_gui:
+                if self.red:
+                    self.gui.update(self.chess_board.board_states(), 'r')
+                else:
+                    self.gui.update(self.chess_board.board_states(), 'b')
+                time.sleep(self.gui_update)
+                info, position = self.gui.check_event()
+                if info == 'reset':
+                    print('reset')
+                    break
+
+            if self.red:
+                self.r_player.update_board(self.chess_board.board_states())
+                if not self.r_player.check_moves():
+                    self.chess_board.set_done('b')
+                    break
+                posi, move = self.r_player.ai_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+            else:
+                self.b_player.update_board(self.chess_board.board_states())
+                if not self.b_player.check_moves():
+                    self.chess_board.set_done('r')
+                    break
+                posi, move = self.b_player.minmax_action()
+                self.chess_board.move_piece(posi, move)
+                self.red = not self.red
+
+        if self.chess_board.win == 'r':
+            print('Red Win!')
+        if self.chess_board.win == 'b':
+            print('Black Win!')
+        if self.chess_board.win == 't':
+            print('Tie!')
+
+        if self.if_record:
+            self.chess_board.save_csv()
+        if self.if_dataset:
+            self.chess_board.fill_dataset()
 
     def __human_minmax_episode(self):
         self.reset()
