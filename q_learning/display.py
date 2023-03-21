@@ -2,7 +2,7 @@ import sys
 import math
 import pygame
 from heapq import heapify, heappop, heappush
-from framework.constant import pieces_images, values_piece, round_imgs, button_imgs
+from constant import pieces_images, values_piece, round_imgs, button_imgs
 
 class GUI:
     def __init__(self):
