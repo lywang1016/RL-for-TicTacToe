@@ -1,0 +1,6 @@
+{
+    'learn_rate': 0.05,
+    'eps': 0.1,
+    'red_ai_q_val_path': 'q_val/red_q_val.hdf5',
+    'black_ai_q_val_path': 'q_val/black_q_val.hdf5'
+}

@@ -1,3 +1,4 @@
+from os.path import exists
 import numpy as np
 from player import Player
 
