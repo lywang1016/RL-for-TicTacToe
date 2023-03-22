@@ -11,17 +11,14 @@ class Player():
     def reset(self):
         self.current_board = None
         self.all_move = []
-    
+
     def check_moves(self):
         self.all_move = []
         for i in range(3):
             for j in range(3):
                 if self.current_board[i][j] == 0:
                     self.all_move.append((i,j))
-        if len(self.all_move) > 0:
-            return True
-        else:
-            return False
+        return len(self.all_move)
     
     def update_board(self, board):
         self.current_board = copy.deepcopy(board)

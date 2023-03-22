@@ -42,8 +42,11 @@ def board_trans(board):
                 res[i][j] = 2
     return res
 
-def board_to_key(board):
-    key = tuple(map(tuple, board))
+def board_to_list(board):
+    key = []
+    for i in range(3):
+        for j in range(3):
+            key.append(board[i][j])
     return key
 
 def key_to_board(key):
@@ -73,18 +76,18 @@ def merge_dataset(dataset1, dataset2): # merge dataset2 data into dataset1
             for i in range(3):
                 dataset1[key][i] += dataset2[key][i]
 
-def h5py_to_dataset(x_path, y_path):
-    dataset = {}
-    if exists(x_path) and exists(y_path):
-        fx = h5py.File(x_path, 'r')
-        fy = h5py.File(y_path, 'r')
-        for key in fx:
-            boards = np.array(fx[key])
-            data = np.array(fy[key])
-            dataset[(board_to_key(boards[0]), board_to_key(boards[1]))] = data
-        fx.close()
-        fy.close()
-    return dataset
+# def h5py_to_dataset(x_path, y_path):
+#     dataset = {}
+#     if exists(x_path) and exists(y_path):
+#         fx = h5py.File(x_path, 'r')
+#         fy = h5py.File(y_path, 'r')
+#         for key in fx:
+#             boards = np.array(fx[key])
+#             data = np.array(fy[key])
+#             dataset[(board_to_key(boards[0]), board_to_key(boards[1]))] = data
+#         fx.close()
+#         fy.close()
+#     return dataset
 
 def dataset_to_h5py(dataset, x_path, y_path):
     fx = h5py.File(x_path, "w")
