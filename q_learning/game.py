@@ -51,6 +51,7 @@ class HumanHumanGame():
                     self.b_player.update_board(self.chess_board.board_states())
                     self.b_player.check_moves()
 
+        winner = self.chess_board.win
         if self.chess_board.win == 'r':
             print('Red Win!')
         if self.chess_board.win == 'b':
@@ -58,6 +59,7 @@ class HumanHumanGame():
         if self.chess_board.win == 't':
             print('Tie!')
         self.reset()
+        return winner
 
 class HumanAIGame():
     def __init__(self):
@@ -103,6 +105,8 @@ class HumanAIGame():
                     self.chess_board.move_piece(posi, move)
                     self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                     self.red = not self.red
+        
+        winner = self.chess_board.win
         if self.chess_board.win == 'r':
             print('Red Win!')
         if self.chess_board.win == 'b':
@@ -110,6 +114,7 @@ class HumanAIGame():
         if self.chess_board.win == 't':
             print('Tie!')
         self.reset()
+        return winner
 
 # class HumanAIGame():
 #     def __init__(self, ai_type):
@@ -238,6 +243,7 @@ class AIAIGame():
                 self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
 
+        winner = self.chess_board.win
         if self.chess_board.win == 'r':
             print('Red Win!')
         if self.chess_board.win == 'b':
@@ -245,3 +251,4 @@ class AIAIGame():
         if self.chess_board.win == 't':
             print('Tie!')
         self.reset()
+        return winner
