@@ -18,6 +18,10 @@ def board_rotate_180(board_in):
     board = board_in[::-1,::-1]
     return board
 
+def board_rotate_180rl(board_in):
+    board = board_rotate_180(board_in)
+    return board_rotate_lr(board)
+
 # def board_rotate_90(board_in):
 #     board = np.zeros((3, 3))
 #     for i in range(3):
@@ -82,5 +86,5 @@ if __name__ == '__main__':
     print(board1)
     board2 = board_rotate_180(board)
     print(board2)
-    board3 = board_rotate_lr(board2)
+    board3 = board_rotate_180rl(board)
     print(board3)
