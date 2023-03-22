@@ -27,28 +27,36 @@ class AIBlackPlayer(Player):
         self.load_h5()
 
     def reset(self):
+        self.write_h5()
         self.current_board = None
         self.action_take = None
         self.all_move = []
         self.sa_touched = []
-        self.write_h5()
     
     def load_h5(self):
         if exists(self.q_path):
             fq = h5py.File(self.q_path, 'r')
             for key in fq:
-                print(key)
+                q_value = np.array(fq[key])
+                print(q_value)
+                temp = key[1:len(key)-1].split(',')
+                sa = []
+                for item in temp:
+                    sa.append(float(item))
+                # print(sa)
+                # break
         else:
             fq = h5py.File(self.q_path, "w")
         fq.close()
     
     def write_h5(self):
+        self.sa_touched = list(set(self.sa_touched))
         fq = h5py.File(self.q_path, "a")
         for item in self.sa_touched:
             h5_key = str(item)
             if h5_key in fq:
                 del fq[h5_key]
-            fq.create_dataset(h5_key, self.q[item])
+            fq.create_dataset(h5_key, np.array([self.q[item]]))
         fq.close()
     
     def eps_greedy_action(self):
@@ -81,7 +89,7 @@ class AIBlackPlayer(Player):
         return self.action_take, self.faction
     
     def q_update(self, board, whos, termination, win):
-        s_prime = tuple(board_to_list(board))
+        s_prime = board_to_list(board)
         if whos == 'r':     # red just made an action
             if termination: 
                 new_sa = tuple(s_prime + [-1, -1])

@@ -21,7 +21,6 @@ class HumanHumanGame():
         self.red = True
 
     def episode(self):
-        self.reset()
         while not self.chess_board.done:
             if self.red:
                 self.gui.update(self.chess_board.board_states(), 'r')
@@ -58,6 +57,7 @@ class HumanHumanGame():
             print('Black Win!')
         if self.chess_board.win == 't':
             print('Tie!')
+        self.reset()
 
 class HumanAIGame():
     def __init__(self):
@@ -75,7 +75,6 @@ class HumanAIGame():
         self.red = True
 
     def episode(self):
-        self.reset()
         while not self.chess_board.done:
             if self.red:
                 self.gui.update(self.chess_board.board_states(), 'r')
@@ -92,6 +91,7 @@ class HumanAIGame():
                     posi, value = self.r_player.human_action(position)
                     if value:
                         self.chess_board.move_piece(posi, value)
+                        self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                         self.red = not self.red
             else:
                 if self.red:
@@ -101,6 +101,7 @@ class HumanAIGame():
                     self.b_player.update_board(self.chess_board.board_states())
                     posi, move = self.b_player.eps_greedy_action()
                     self.chess_board.move_piece(posi, move)
+                    self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                     self.red = not self.red
         if self.chess_board.win == 'r':
             print('Red Win!')
@@ -108,6 +109,7 @@ class HumanAIGame():
             print('Black Win!')
         if self.chess_board.win == 't':
             print('Tie!')
+        self.reset()
 
 # class HumanAIGame():
 #     def __init__(self, ai_type):
@@ -209,7 +211,6 @@ class AIAIGame():
         self.red = True
 
     def episode(self):
-        self.reset()
         while not self.chess_board.done:
             if self.if_gui:
                 if self.red:
@@ -224,19 +225,17 @@ class AIAIGame():
 
             if self.red:
                 self.r_player.update_board(self.chess_board.board_states())
-                if not self.r_player.check_moves():
-                    self.chess_board.set_done('b')
-                    break
+                self.r_player.check_moves()
                 posi, move = self.r_player.random_action()
                 self.chess_board.move_piece(posi, move)
+                self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
             else:
                 self.b_player.update_board(self.chess_board.board_states())
-                if not self.b_player.check_moves():
-                    self.chess_board.set_done('r')
-                    break
+                self.b_player.check_moves()
                 posi, move = self.b_player.eps_greedy_action()
                 self.chess_board.move_piece(posi, move)
+                self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
 
         if self.chess_board.win == 'r':
@@ -245,3 +244,4 @@ class AIAIGame():
             print('Black Win!')
         if self.chess_board.win == 't':
             print('Tie!')
+        self.reset()
