@@ -12,10 +12,8 @@ class AIBlackPlayer(Player):
     def __init__(self):
         self.faction = -1
         self.current_board = None
-        self.last_board = None
         self.action_take = None
         self.all_move = []
-        self.first_move = True
         self.sa_touched = []
         self.q = {}
         with open('config.yaml') as f:
@@ -30,15 +28,10 @@ class AIBlackPlayer(Player):
 
     def reset(self):
         self.current_board = None
-        self.last_board = None
         self.action_take = None
         self.all_move = []
-        self.first_move = True
         self.sa_touched = []
-    
-    def update_board(self, board):
-        self.last_board = self.current_board
-        self.current_board = copy.deepcopy(board)
+        self.write_h5()
     
     def load_h5(self):
         if exists(self.q_path):
@@ -59,11 +52,6 @@ class AIBlackPlayer(Player):
         fq.close()
     
     def eps_greedy_action(self):
-        if self.first_move:
-            self.first_move = False
-            self.write_h5()
-        else:
-            self.q_update()
         temp = np.random.rand()
         if temp < self.eps:
             return self.random_action()
@@ -79,6 +67,7 @@ class AIBlackPlayer(Player):
             temp_sa = tuple(cur_state + [self.all_move[i][0], self.all_move[i][1]])
             if temp_sa not in self.q:
                 self.q[temp_sa] = np.random.rand()
+                self.sa_touched.append(temp_sa)
             if self.q[temp_sa] > best_q:
                 best_q = self.q[temp_sa]
                 best_idx = i
@@ -86,46 +75,66 @@ class AIBlackPlayer(Player):
         return self.action_take, self.faction
 
     def random_action(self):
-        posi_num = len(self.all_move)
-        posi_idx = np.random.randint(posi_num)
+        length = self.check_moves()
+        posi_idx = np.random.randint(length)
         self.action_take = self.all_move[posi_idx]
         return self.action_take, self.faction
     
-    def q_update(self):
-        pre_state = board_to_list(self.last_board)
-        sa = tuple(pre_state + [self.action_take[0], self.action_take[1]])
-        self.sa_touched.append(sa)
-        if sa not in self.q:
-            self.q[sa] = np.random.rand()
-        else:
-            length = self.check_moves()
-            if length > 1:  # not a terminate state    
-                cur_state = board_to_list(self.current_board)
+    def q_update(self, board, whos, termination, win):
+        s_prime = tuple(board_to_list(board))
+        if whos == 'r':     # red just made an action
+            if termination: 
+                new_sa = tuple(s_prime + [-1, -1])
+                if new_sa not in self.q:
+                    self.q[new_sa] = 0
+                    self.sa_touched.append(new_sa)
+                if win == 'r':
+                    reward = -1
+                elif win == 'b':
+                    reward = 1
+                else:
+                    reward = 0
+            else:
+                all_move = []
+                for i in range(3):
+                    for j in range(3):
+                        if board[i][j] == 0:
+                            all_move.append((i,j))
+                length = len(all_move)
                 best_idx = -1
                 best_q = -1000
                 for i in range(length):
-                    temp_sa = tuple(cur_state + [self.all_move[i][0], self.all_move[i][1]])
+                    temp_sa = tuple(s_prime + [all_move[i][0], all_move[i][1]])
                     if temp_sa not in self.q:
                         self.q[temp_sa] = np.random.rand()
                         self.sa_touched.append(temp_sa)
                     if self.q[temp_sa] > best_q:
                         best_q = self.q[temp_sa]
                         best_idx = i
-                best_action = self.all_move[best_idx]
-                new_sa = tuple(cur_state + [best_action[0], best_action[1]])
+                best_action = all_move[best_idx]
+                new_sa = tuple(s_prime + [best_action[0], best_action[1]])
+                reward = 0
+            s = board_to_list(self.current_board)
+            sa = tuple(s + [self.action_take[0], self.action_take[1]])
+            if sa not in self.q:
+                self.q[sa] = np.random.rand()
+            self.sa_touched.append(sa)
+            self.q[sa] = self.q[sa] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa]) 
+        else:   # black just made an action
+            if termination:
+                new_sa = tuple(s_prime + [-1, -1])
                 if new_sa not in self.q:
-                    self.q[new_sa] = np.random.rand()
+                    self.q[new_sa] = 0
                     self.sa_touched.append(new_sa)
-                self.q[sa] = self.q[sa] + self.lr*(self.gamma*self.q[new_sa] - self.q[sa])
-            else: # terminate state
-                temp_board = ChessBoard()
-                temp_board.load_board(self.current_board)
-                if length == 1:
-                    temp_board.move_piece(self.all_move[0], self.faction)
-                if temp_board.win == 'r':   # ai lose
+                if win == 'r':
                     reward = -1
-                elif temp_board.win == 'b':   # ai win
+                elif win == 'b':
                     reward = 1
-                else:                       # tie
+                else:
                     reward = 0
-                self.q[sa] = self.q[sa] + self.lr*(reward - self.q[sa])
+                s = board_to_list(self.current_board)
+                sa = tuple(s + [self.action_take[0], self.action_take[1]])
+                if sa not in self.q:
+                    self.q[sa] = np.random.rand()
+                self.sa_touched.append(sa)
+                self.q[sa] = self.q[sa] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa]) 
