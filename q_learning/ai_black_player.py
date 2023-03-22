@@ -1,12 +1,10 @@
 import os
 import yaml
-import copy
 import h5py
 import numpy as np
 from os.path import exists
 from utils import board_to_list
 from player import Player
-from board import ChessBoard
 
 class AIBlackPlayer(Player):
     def __init__(self):
