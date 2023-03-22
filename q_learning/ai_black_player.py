@@ -24,7 +24,7 @@ class AIBlackPlayer(Player):
         self.lr = self.config['learn_rate']
         self.gamma = self.config['discount']
         pwd = os.getcwd()
-        root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '..')
+        root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
         self.q_path = os.path.join(root_dir, self.config['black_ai_q_val_path'])
         self.load_h5()
 
@@ -45,9 +45,18 @@ class AIBlackPlayer(Player):
             fq = h5py.File(self.q_path, 'r')
             for key in fq:
                 print(key)
+        else:
+            fq = h5py.File(self.q_path, "w")
+        fq.close()
     
     def write_h5(self):
-        print(len(self.q))
+        fq = h5py.File(self.q_path, "a")
+        for item in self.sa_touched:
+            h5_key = str(item)
+            if h5_key in fq:
+                del fq[h5_key]
+            fq.create_dataset(h5_key, self.q[item])
+        fq.close()
     
     def eps_greedy_action(self):
         if self.first_move:
