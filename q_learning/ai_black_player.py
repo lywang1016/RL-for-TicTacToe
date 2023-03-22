@@ -1,9 +1,11 @@
 import os
 import yaml
 import h5py
+import copy
 import numpy as np
 from os.path import exists
-from utils import board_to_list
+from utils import board_to_list, board_rotate_lr, board_rotate_180
+from constant import posi_idx_map
 from player import Player
 
 class AIBlackPlayer(Player):
@@ -70,6 +72,10 @@ class AIBlackPlayer(Player):
         best_q = -1000
         for i in range(length):
             temp_sa = tuple(cur_state + [self.all_move[i][0], self.all_move[i][1]])
+            # idx = posi_idx_map[self.all_move[i]]
+            # temp_sa = copy.deepcopy(cur_state)
+            # temp_sa[idx] = self.faction
+            # temp_sa = tuple(temp_sa)
             if temp_sa not in self.q:
                 self.q[temp_sa] = np.random.rand()
                 self.sa_touched.append(temp_sa)
