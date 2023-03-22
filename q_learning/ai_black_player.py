@@ -38,13 +38,12 @@ class AIBlackPlayer(Player):
             fq = h5py.File(self.q_path, 'r')
             for key in fq:
                 q_value = np.array(fq[key])
-                print(q_value)
                 temp = key[1:len(key)-1].split(',')
                 sa = []
                 for item in temp:
                     sa.append(float(item))
-                # print(sa)
-                # break
+                sa = tuple(sa)
+                self.q[sa] = q_value
         else:
             fq = h5py.File(self.q_path, "w")
         fq.close()
@@ -56,7 +55,7 @@ class AIBlackPlayer(Player):
             h5_key = str(item)
             if h5_key in fq:
                 del fq[h5_key]
-            fq.create_dataset(h5_key, np.array([self.q[item]]))
+            fq.create_dataset(h5_key, data=self.q[item])
         fq.close()
     
     def eps_greedy_action(self):
