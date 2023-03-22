@@ -117,7 +117,7 @@ class HumanAIGame():
                         if not self.b_player.check_moves():
                             self.chess_board.set_done('r')
                             break
-                        posi, move = self.b_player.random_action()
+                        posi, move = self.b_player.eps_greedy_action()
                         self.chess_board.move_piece(posi, move)
                         self.red = not self.red
                 else:
@@ -185,7 +185,7 @@ class AIAIGame():
                 if not self.b_player.check_moves():
                     self.chess_board.set_done('r')
                     break
-                posi, move = self.b_player.random_action()
+                posi, move = self.b_player.eps_greedy_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
 
