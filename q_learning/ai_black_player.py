@@ -1,7 +1,6 @@
 import os
 import yaml
 import h5py
-import copy
 import numpy as np
 from os.path import exists
 from utils import board_to_list, board_rotate_lr, board_rotate_180, board_rotate_180lr

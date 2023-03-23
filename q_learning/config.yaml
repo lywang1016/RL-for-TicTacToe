@@ -1,7 +1,9 @@
 {
-    'eps': 0.9,
-    'learn_rate': 0.9,
+    'eps': 0.1,
+    'learn_rate': 0.05,
     'discount': 1,
-    'red_ai_q_val_path': 'q_learning\q_value\red_q_value.hdf5',
-    'black_ai_q_val_path': 'q_learning\q_value\black_q_value.hdf5'
+    'red_ai_q1_val_path': 'q_learning\q_value\red_q1_value.hdf5',
+    'red_ai_q2_val_path': 'q_learning\q_value\red_q2_value.hdf5',
+    'black_ai_q1_val_path': 'q_learning\q_value\black_q1_value.hdf5',
+    'black_ai_q2_val_path': 'q_learning\q_value\black_q2_value.hdf5'
 }
