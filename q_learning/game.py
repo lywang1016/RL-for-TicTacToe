@@ -3,8 +3,8 @@ from board import ChessBoard
 from display import GUI
 from human_player import HumanPlayer
 from ai_player import AIPlayer
-from ai_red_player import AIRedPlayer
-from ai_black_player import AIBlackPlayer
+# from ai_red_player import AIRedPlayer
+# from ai_black_player import AIBlackPlayer
 
 class HumanHumanGame():
     def __init__(self):
@@ -208,8 +208,7 @@ class AIAIGame():
         if self.if_gui:
             self.gui = GUI()
             self.gui_update = 0.1
-        self.r_player = AIRedPlayer()
-        # self.b_player = AIBlackPlayer()
+        self.r_player = AIPlayer('r')
         self.b_player = AIPlayer('b')
     
     def reset(self):
@@ -236,6 +235,7 @@ class AIAIGame():
                 self.r_player.check_moves()
                 posi, move = self.r_player.random_action()
                 self.chess_board.move_piece(posi, move)
+                self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
             else:
@@ -243,15 +243,16 @@ class AIAIGame():
                 self.b_player.check_moves()
                 posi, move = self.b_player.eps_greedy_action()
                 self.chess_board.move_piece(posi, move)
+                self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
 
         winner = self.chess_board.win
-        if self.chess_board.win == 'r':
-            print('Red Win!')
-        if self.chess_board.win == 'b':
-            print('Black Win!')
-        if self.chess_board.win == 't':
-            print('Tie!')
+        # if self.chess_board.win == 'r':
+        #     print('Red Win!')
+        # if self.chess_board.win == 'b':
+        #     print('Black Win!')
+        # if self.chess_board.win == 't':
+        #     print('Tie!')
         self.reset()
         return winner

@@ -1,3 +1,4 @@
+from tqdm import tqdm, trange
 from game import HumanHumanGame, HumanAIGame, AIAIGame
 
 def main():
@@ -9,7 +10,8 @@ def main():
     bwin = 0
     t = 0
     total = 2000
-    for i in range(total):
+    # for i in range(total):
+    for i in trange(total):
         winner = game.episode()
         if winner == 'r':
             rwin += 1
