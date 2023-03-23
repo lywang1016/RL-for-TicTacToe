@@ -2,6 +2,7 @@ import time
 from board import ChessBoard
 from display import GUI
 from human_player import HumanPlayer
+from ai_player import AIPlayer
 from ai_red_player import AIRedPlayer
 from ai_black_player import AIBlackPlayer
 
@@ -68,7 +69,8 @@ class HumanAIGame():
         self.red = True
         self.chess_board = ChessBoard()
         self.r_player = HumanPlayer('r')
-        self.b_player = AIBlackPlayer()
+        # self.b_player = AIBlackPlayer()
+        self.b_player = AIPlayer('b')
     
     def reset(self):
         self.chess_board.reset_board()
@@ -207,7 +209,8 @@ class AIAIGame():
             self.gui = GUI()
             self.gui_update = 0.1
         self.r_player = AIRedPlayer()
-        self.b_player = AIBlackPlayer()
+        # self.b_player = AIBlackPlayer()
+        self.b_player = AIPlayer('b')
     
     def reset(self):
         self.chess_board.reset_board()

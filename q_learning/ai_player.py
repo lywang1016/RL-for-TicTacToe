@@ -141,6 +141,10 @@ class AIPlayer(Player):
         self.action_take = self.all_move[posi_idx]
         return self.action_take, self.faction
     
+    def q_update(self, board, whos, termination, win):
+        if self.faction == -1:
+            self.__q_update_b(board, whos, termination, win)
+    
     def __q_update_b(self, board, whos, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
