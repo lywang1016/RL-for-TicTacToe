@@ -1,16 +1,66 @@
-from tqdm import tqdm, trange
-from game import HumanHumanGame, HumanAIGame, AIAIGame
+from tqdm import trange
+from game import HumanHumanGame, HumanAIGame, AIHumanGame, AIAIGame
 
-def main():
-    # game = HumanHumanGame()
-    # game = HumanAIGame()
-    game = AIAIGame(if_gui=False)
-
+def human_human():
+    game = HumanHumanGame()
     rwin = 0
     bwin = 0
     t = 0
-    total = 2000
-    # for i in range(total):
+    total = 5
+    for i in range(total):
+        winner = game.episode()
+        if winner == 'r':
+            rwin += 1
+        elif winner == 'b':
+            bwin += 1
+        else:
+            t += 1
+    print("R win times: " + str(rwin) + "\tR not lose rate: " + str((rwin+t) / total))
+    print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
+    print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
+
+def human_ai():
+    game = HumanAIGame()
+    rwin = 0
+    bwin = 0
+    t = 0
+    total = 5
+    for i in range(total):
+        winner = game.episode()
+        if winner == 'r':
+            rwin += 1
+        elif winner == 'b':
+            bwin += 1
+        else:
+            t += 1
+    print("R win times: " + str(rwin) + "\tR not lose rate: " + str((rwin+t) / total))
+    print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
+    print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
+
+def ai_human():
+    game = AIHumanGame()
+    rwin = 0
+    bwin = 0
+    t = 0
+    total = 5
+    for i in range(total):
+        winner = game.episode()
+        if winner == 'r':
+            rwin += 1
+        elif winner == 'b':
+            bwin += 1
+        else:
+            t += 1
+    print("R win times: " + str(rwin) + "\tR not lose rate: " + str((rwin+t) / total))
+    print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
+    print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
+
+def ai_ai():
+    game = AIAIGame(if_gui=False)
+    rwin = 0
+    bwin = 0
+    t = 0
+    total = 20000
     for i in trange(total):
         winner = game.episode()
         if winner == 'r':
@@ -19,10 +69,9 @@ def main():
             bwin += 1
         else:
             t += 1
-    print("R win times: " + str(rwin))
-    print("B win times: " + str(bwin))
-    print("Tie times: " + str(t))
-    print("B not lose rate: " + str((bwin+t) / total))
+    print("R win times: " + str(rwin) + "\tR not lose rate: " + str((rwin+t) / total))
+    print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
+    print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
 
 if __name__ == '__main__':
-    main()
+    ai_ai()
