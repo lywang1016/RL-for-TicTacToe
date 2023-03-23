@@ -20,14 +20,17 @@ class AIPlayer(Player):
         self.q2 = {}
         with open('config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
-        self.eps = self.config['eps']
-        self.lr = self.config['learn_rate']
-        self.gamma = self.config['discount']
+        self.eps = self.config['eps_r']
+        self.lr = self.config['learn_rate_r']
+        self.gamma = self.config['discount_r']
         pwd = os.getcwd()
         root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
         self.q1_path = os.path.join(root_dir, self.config['red_ai_q1_val_path'])
         self.q2_path = os.path.join(root_dir, self.config['red_ai_q2_val_path'])
         if color == 'b':
+            self.eps = self.config['eps_b']
+            self.lr = self.config['learn_rate_b']
+            self.gamma = self.config['discount_b']
             self.q1_path = os.path.join(root_dir, self.config['black_ai_q1_val_path'])
             self.q2_path = os.path.join(root_dir, self.config['black_ai_q2_val_path'])
         self.load_h5()
