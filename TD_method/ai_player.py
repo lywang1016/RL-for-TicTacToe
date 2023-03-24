@@ -15,8 +15,8 @@ class AIPlayer(Player):
         self.faction = 1
         if color == 'b':
             self.faction = -1
-        self.current_board = None
-        self.action_take = None
+        self.current_board = np.zeros((3, 3))
+        self.action_take = (-1, -1)
         self.all_move = []
         self.sa_touched = []
         self.q = {}
@@ -56,8 +56,8 @@ class AIPlayer(Player):
 
     def reset(self):
         self.write_h5()
-        self.current_board = None
-        self.action_take = None
+        self.current_board = np.zeros((3, 3))
+        self.action_take = (-1, -1)
         self.all_move = []
         self.sa_touched = []
         if self.learn_method == 'sarsa':
