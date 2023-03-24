@@ -92,7 +92,7 @@ class HumanAIGame():
                     posi, value = self.r_player.human_action(position)
                     if value:
                         self.chess_board.move_piece(posi, value)
-                        self.b_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                        self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                         self.red = not self.red
             else:
                 if self.red:
@@ -102,7 +102,7 @@ class HumanAIGame():
                     self.b_player.update_board(self.chess_board.board_states())
                     posi, move = self.b_player.eps_greedy_action()
                     self.chess_board.move_piece(posi, move)
-                    self.b_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                    self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                     self.red = not self.red
         
         winner = self.chess_board.win
@@ -147,7 +147,7 @@ class AIHumanGame():
                     posi, value = self.b_player.human_action(position)
                     if value:
                         self.chess_board.move_piece(posi, value)
-                        self.r_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                        self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                         self.red = not self.red
             else:
                 if not self.red:
@@ -157,7 +157,7 @@ class AIHumanGame():
                     self.r_player.update_board(self.chess_board.board_states())
                     posi, move = self.r_player.eps_greedy_action()
                     self.chess_board.move_piece(posi, move)
-                    self.r_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                    self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                     self.red = not self.red
         
         winner = self.chess_board.win
@@ -205,16 +205,16 @@ class AIAIGame():
                 self.r_player.check_moves()
                 posi, move = self.r_player.eps_greedy_action()
                 self.chess_board.move_piece(posi, move)
-                self.r_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
-                self.b_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
             else:
                 self.b_player.update_board(self.chess_board.board_states())
                 self.b_player.check_moves()
                 posi, move = self.b_player.eps_greedy_action()
                 self.chess_board.move_piece(posi, move)
-                self.r_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
-                self.b_player.double_q_learning(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                self.r_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
+                self.b_player.q_update(self.chess_board.board_states(), self.red, self.chess_board.done, self.chess_board.win)
                 self.red = not self.red
 
         winner = self.chess_board.win

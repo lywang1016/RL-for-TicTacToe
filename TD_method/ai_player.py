@@ -8,7 +8,10 @@ from constant import posi_idx_map, idx_rotate_180, idx_rotate_lr, idx_rotate_180
 from player import Player
 
 class AIPlayer(Player):
-    def __init__(self, color, learn_method):
+    def __init__(self, color):
+        pwd = os.getcwd()
+        root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
+
         self.faction = 1
         if color == 'b':
             self.faction = -1
@@ -19,14 +22,13 @@ class AIPlayer(Player):
         self.q = {}
         self.q1 = {}
         self.q2 = {}
-        self.learn_method = learn_method
+        
         with open('config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
         self.eps = self.config['eps_r']
         self.lr = self.config['learn_rate_r']
         self.gamma = self.config['discount_r']
-        pwd = os.getcwd()
-        root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
+        self.learn_method = self.config['learn_method_r']
         if self.learn_method == 'q_learning':
             self.q_path = os.path.join(root_dir, self.config['red_ai_q_learning_val_path'])
         if self.learn_method == 'double_q_learning':
@@ -34,7 +36,10 @@ class AIPlayer(Player):
             self.q2_path = os.path.join(root_dir, self.config['red_ai_q2_val_path'])
         if self.learn_method == 'sarsa':
             self.q_path = os.path.join(root_dir, self.config['red_ai_q_sarsa_val_path'])
+            self.next_action = None
+            self.init_action = True
         if color == 'b':
+            self.learn_method = self.config['learn_method_b']
             self.eps = self.config['eps_b']
             self.lr = self.config['learn_rate_b']
             self.gamma = self.config['discount_b']
@@ -45,6 +50,8 @@ class AIPlayer(Player):
                 self.q2_path = os.path.join(root_dir, self.config['black_ai_q2_val_path'])
             if self.learn_method == 'sarsa':
                 self.q_path = os.path.join(root_dir, self.config['black_ai_q_sarsa_val_path'])
+                self.next_action = None
+                self.init_action = True
         self.load_h5()
 
     def reset(self):
@@ -53,6 +60,8 @@ class AIPlayer(Player):
         self.action_take = None
         self.all_move = []
         self.sa_touched = []
+        if self.learn_method == 'sarsa':
+            self.init_action = True
     
     def load_h5(self):
         if self.learn_method == 'sarsa' or self.learn_method == 'q_learning':
@@ -124,14 +133,26 @@ class AIPlayer(Player):
             fq2.close()
     
     def eps_greedy_action(self):
-        temp = np.random.rand()
-        if temp < self.eps:
-            return self.random_action()
+        if self.learn_method == 'sarsa':
+            if self.init_action:
+                self.init_action = False
+                temp = np.random.rand()
+                if temp < self.eps:
+                    return self.random_action()
+                else:
+                    return self.greedy_action()
+            else:
+                self.action_take = self.next_action
+                return self.next_action, self.faction
         else:
-            return self.greedy_action()
+            temp = np.random.rand()
+            if temp < self.eps:
+                return self.random_action()
+            else:
+                return self.greedy_action()
 
     def greedy_action(self):
-        if self.learn_method == 'q_learning':
+        if self.learn_method == 'sarsa' or self.learn_method == 'q_learning':
             length = self.check_moves()
             cur_state_origin = board_to_list(self.current_board)
             cur_state_180 = board_to_list(board_rotate_180(self.current_board))
@@ -173,7 +194,7 @@ class AIPlayer(Player):
                         best_idx = i
             self.action_take = self.all_move[best_idx]
             return self.action_take, self.faction
-        if self.learn_method == 'double_q_learning': 
+        else: 
             length = self.check_moves()
             cur_state_origin = board_to_list(self.current_board)
             cur_state_180 = board_to_list(board_rotate_180(self.current_board))
@@ -222,6 +243,14 @@ class AIPlayer(Player):
         posi_idx = np.random.randint(length)
         self.action_take = self.all_move[posi_idx]
         return self.action_take, self.faction
+    
+    def q_update(self, board, whos, termination, win):
+        if self.learn_method == 'sarsa':
+            self.sarsa_q_learning(board, whos, termination, win)
+        if self.learn_method == 'q_learning':
+            self.q_learning(board, whos, termination, win)
+        if self.learn_method == 'double_q_learning':
+            self.double_q_learning(board, whos, termination, win)
     
     def sarsa_q_learning(self, board, whos, termination, win):
         if self.faction == -1:
@@ -315,8 +344,14 @@ class AIPlayer(Player):
                             best_q = self.q[temp_sa_origin]
                             best_idx = i      
                 best_action = all_move[best_idx]
-                idx = posi_idx_map[best_action]
-                a_origin = best_action
+                temp = np.random.rand()
+                if temp < self.eps:
+                    posi_idx = np.random.randint(length)
+                    self.next_action = all_move[posi_idx]
+                else:
+                    self.next_action = best_action
+                idx = posi_idx_map[self.next_action]
+                a_origin = self.next_action
                 a_180 = idx_rotate_180[idx]
                 a_lr = idx_rotate_lr[idx]
                 a_180lr = idx_rotate_180lr[idx]
@@ -492,8 +527,14 @@ class AIPlayer(Player):
                             best_q = self.q[temp_sa_origin]
                             best_idx = i      
                 best_action = all_move[best_idx]
-                idx = posi_idx_map[best_action]
-                a_origin = best_action
+                temp = np.random.rand()
+                if temp < self.eps:
+                    posi_idx = np.random.randint(length)
+                    self.next_action = all_move[posi_idx]
+                else:
+                    self.next_action = best_action
+                idx = posi_idx_map[self.next_action]
+                a_origin = self.next_action
                 a_180 = idx_rotate_180[idx]
                 a_lr = idx_rotate_lr[idx]
                 a_180lr = idx_rotate_180lr[idx]

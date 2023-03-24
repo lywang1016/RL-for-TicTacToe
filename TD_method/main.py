@@ -74,4 +74,7 @@ def ai_ai():
     print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
 
 if __name__ == '__main__':
+    # human_human()
+    # ai_human()
+    # human_ai()
     ai_ai()
