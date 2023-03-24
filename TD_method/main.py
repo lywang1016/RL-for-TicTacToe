@@ -60,7 +60,7 @@ def ai_ai():
     rwin = 0
     bwin = 0
     t = 0
-    total = 20000
+    total = 60000
     for i in trange(total):
         winner = game.episode()
         if winner == 'r':
