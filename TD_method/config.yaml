@@ -7,7 +7,7 @@
     'red_ai_q_learning_val_path': 'TD_method\q_value\red_q_learning_value.hdf5',
     'red_ai_q1_val_path': 'TD_method\q_value\red_q1_value.hdf5',
     'red_ai_q2_val_path': 'TD_method\q_value\red_q2_value.hdf5',
-    'learn_method_b': 'sarsa',
+    'learn_method_b': 'q_learning',
     'eps_b': 0.05,
     'learn_rate_b': 0.05,
     'discount_b': 1,

@@ -22,7 +22,7 @@ class AIPlayer(Player):
         self.q = {}
         self.q1 = {}
         self.q2 = {}
-        
+
         with open('config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
         self.eps = self.config['eps_r']
@@ -62,6 +62,7 @@ class AIPlayer(Player):
         self.sa_touched = []
         if self.learn_method == 'sarsa':
             self.init_action = True
+            self.next_action = None
     
     def load_h5(self):
         if self.learn_method == 'sarsa' or self.learn_method == 'q_learning':
@@ -143,7 +144,7 @@ class AIPlayer(Player):
                     return self.greedy_action()
             else:
                 self.action_take = self.next_action
-                return self.next_action, self.faction
+                return self.action_take, self.faction
         else:
             temp = np.random.rand()
             if temp < self.eps:
@@ -244,38 +245,38 @@ class AIPlayer(Player):
         self.action_take = self.all_move[posi_idx]
         return self.action_take, self.faction
     
-    def q_update(self, board, whos, termination, win):
+    def q_update(self, board, red_move, termination, win):
         if self.learn_method == 'sarsa':
-            self.sarsa_q_learning(board, whos, termination, win)
+            self.sarsa_q_learning(board, red_move, termination, win)
         if self.learn_method == 'q_learning':
-            self.q_learning(board, whos, termination, win)
+            self.q_learning(board, red_move, termination, win)
         if self.learn_method == 'double_q_learning':
-            self.double_q_learning(board, whos, termination, win)
+            self.double_q_learning(board, red_move, termination, win)
     
-    def sarsa_q_learning(self, board, whos, termination, win):
+    def sarsa_q_learning(self, board, red_move, termination, win):
         if self.faction == -1:
-            self.__q_sarsa_update_b(board, whos, termination, win)
+            self.__q_sarsa_update_b(board, red_move, termination, win)
         else:
-            self.__q_sarsa_update_r(board, whos, termination, win)
+            self.__q_sarsa_update_r(board, red_move, termination, win)
     
-    def q_learning(self, board, whos, termination, win):
+    def q_learning(self, board, red_move, termination, win):
         if self.faction == -1:
-            self.__q_learning_update_b(board, whos, termination, win)
+            self.__q_learning_update_b(board, red_move, termination, win)
         else:
-            self.__q_learning_update_r(board, whos, termination, win)
+            self.__q_learning_update_r(board, red_move, termination, win)
     
-    def double_q_learning(self, board, whos, termination, win):
+    def double_q_learning(self, board, red_move, termination, win):
         if self.faction == -1:
-            self.__double_q_update_b(board, whos, termination, win)
+            self.__double_q_update_b(board, red_move, termination, win)
         else:
-            self.__double_q_update_r(board, whos, termination, win)
+            self.__double_q_update_r(board, red_move, termination, win)
 
-    def __q_sarsa_update_r(self, board, whos, termination, win):
+    def __q_sarsa_update_r(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'b':     # black just made an action
+        if not red_move:     # black just made an action
             if termination:        
                 if win == 'r':
                     reward = 2
@@ -300,7 +301,7 @@ class AIPlayer(Player):
                     self.q[new_sa_origin] = 0
                     self.sa_touched.append(new_sa_origin)  
                     new_sa = new_sa_origin  
-            else:           
+            else:          
                 reward = 0
 
                 all_move = []
@@ -347,9 +348,9 @@ class AIPlayer(Player):
                 temp = np.random.rand()
                 if temp < self.eps:
                     posi_idx = np.random.randint(length)
-                    self.next_action = all_move[posi_idx]
+                    self.next_action = all_move[posi_idx]  
                 else:
-                    self.next_action = best_action
+                    self.next_action = best_action  
                 idx = posi_idx_map[self.next_action]
                 a_origin = self.next_action
                 a_180 = idx_rotate_180[idx]
@@ -453,12 +454,12 @@ class AIPlayer(Player):
                     self.sa_touched.append(sa_origin)
                     self.q[sa_origin] = self.q[sa_origin] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa_origin])
 
-    def __q_sarsa_update_b(self, board, whos, termination, win):
+    def __q_sarsa_update_b(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'r':     # red just made an action
+        if red_move:     # red just made an action
             if termination:        
                 if win == 'r':
                     reward = -100
@@ -636,12 +637,12 @@ class AIPlayer(Player):
                     self.sa_touched.append(sa_origin)
                     self.q[sa_origin] = self.q[sa_origin] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa_origin])
     
-    def __q_learning_update_r(self, board, whos, termination, win):
+    def __q_learning_update_r(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'b':     # black just made an action
+        if not red_move:     # black just made an action
             if termination:        
                 if win == 'r':
                     reward = 2
@@ -813,12 +814,12 @@ class AIPlayer(Player):
                     self.sa_touched.append(sa_origin)
                     self.q[sa_origin] = self.q[sa_origin] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa_origin])
 
-    def __q_learning_update_b(self, board, whos, termination, win):
+    def __q_learning_update_b(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'r':     # red just made an action
+        if red_move:     # red just made an action
             if termination:        
                 if win == 'r':
                     reward = -100
@@ -990,12 +991,12 @@ class AIPlayer(Player):
                     self.sa_touched.append(sa_origin)
                     self.q[sa_origin] = self.q[sa_origin] + self.lr*(reward + self.gamma*self.q[new_sa] - self.q[sa_origin])
 
-    def __double_q_update_r(self, board, whos, termination, win):
+    def __double_q_update_r(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'b':     # black just made an action
+        if not red_move:     # black just made an action
             if termination: 
                 if win == 'r':
                     reward = 1
@@ -1380,12 +1381,12 @@ class AIPlayer(Player):
                         self.sa_touched.append(sa_origin)
                         self.q2[sa_origin] = self.q2[sa_origin] + self.lr*(reward + self.gamma*self.q1[new_sa] - self.q2[sa_origin])
     
-    def __double_q_update_b(self, board, whos, termination, win):
+    def __double_q_update_b(self, board, red_move, termination, win):
         s_prime_origin = board_to_list(board)
         s_prime_180 = board_to_list(board_rotate_180(board))
         s_prime_lr = board_to_list(board_rotate_lr(board))
         s_prime_180lr = board_to_list(board_rotate_180lr(board))
-        if whos == 'r':     # red just made an action
+        if red_move:     # red just made an action
             if termination: 
                 if win == 'r':
                     reward = -1
