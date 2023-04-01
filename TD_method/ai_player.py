@@ -285,10 +285,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -407,10 +407,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -468,10 +468,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -590,10 +590,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -651,10 +651,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -767,10 +767,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -828,10 +828,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -944,10 +944,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q:
@@ -1005,10 +1005,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q1 and new_sa_origin in self.q2:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q1 and new_sa_180 in self.q2:
@@ -1312,10 +1312,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q1 and new_sa_origin in self.q2:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q1 and new_sa_180 in self.q2:
@@ -1395,10 +1395,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q1 and new_sa_origin in self.q2:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q1 and new_sa_180 in self.q2:
@@ -1702,10 +1702,10 @@ class AIPlayer(Player):
                 else:
                     reward = 0
 
-                new_sa_origin = tuple(s_prime_origin + [-1, -1])
-                new_sa_180 = tuple(s_prime_180 + [-1, -1])
-                new_sa_lr = tuple(s_prime_lr + [-1, -1])
-                new_sa_180lr = tuple(s_prime_180lr + [-1, -1])
+                new_sa_origin = tuple(s_prime_origin + [-1.0, -1.0])
+                new_sa_180 = tuple(s_prime_180 + [-1.0, -1.0])
+                new_sa_lr = tuple(s_prime_lr + [-1.0, -1.0])
+                new_sa_180lr = tuple(s_prime_180lr + [-1.0, -1.0])
                 if new_sa_origin in self.q1 and new_sa_origin in self.q2:
                     new_sa = new_sa_origin
                 elif new_sa_180 in self.q1 and new_sa_180 in self.q2:
