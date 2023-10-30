@@ -2,11 +2,11 @@ import pygame
 
 pieces_images = {
     'b_piece': pygame.image.load("img/black.jpg"),
-    'r_piece': pygame.image.load("img/white.png")
+    'r_piece': pygame.image.load("img/white.jpg")
 }
 
 round_imgs = {
-    'r_move': pygame.image.load("img/white.png"),
+    'r_move': pygame.image.load("img/white.jpg"),
     'b_move': pygame.image.load("img/black.jpg")
 }
 
