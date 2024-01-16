@@ -62,6 +62,10 @@ idx_rotate_180lr = {
     9: (0, 2)
 }
 
+def action_change_perspective(posi):
+    posi_new = (2-posi[0], 2-posi[1])
+    return posi_new
+
 def board_to_list(board):
     key = []
     for i in range(3):

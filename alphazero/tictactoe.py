@@ -1,5 +1,5 @@
 import numpy as np
-from utils import piece_values
+from utils import piece_values, action_change_perspective
 
 class TicTacToe:
     def __init__(self):
@@ -30,14 +30,23 @@ class TicTacToe:
     def get_initial_state(self):
         return np.zeros((self.row_count, self.column_count))
     
-    def get_next_state(self, state, action, player):
-        posi = self.actions_decode[action]
-        row = posi[0]
-        column = posi[1]
-        state[row, column] = player
-        return state
+    def get_next_state(self, state, action, player):        # state in view of player 1 and player is going to play
+        if player == 1:
+            posi = self.actions_decode[action]
+            row = posi[0]
+            column = posi[1]
+            state[row, column] = 1
+            return state
+        else:
+            posi = self.actions_decode[action]
+            posi = action_change_perspective(posi)
+            row = posi[0]
+            column = posi[1]
+            state[row, column] = -1
+            return state
     
-    def get_valid_moves(self, state): 
+    def get_valid_moves(self, state, player):               # state in view of player 1 and player is going to play
+        state = self.change_perspective(state, player)
         valid_moves = []
         for i in range(self.row_count):
             for j in range(self.column_count):
@@ -55,51 +64,82 @@ class TicTacToe:
                 mask.append(0)
         return np.array(mask, dtype=np.uint8)
     
-    def get_value_and_terminated(self, state):
+    def get_value_and_terminated(self, state, player):      # state in view of player 1 and player just played
         for i in range(3):
             if state[i][0]==state[i][1] and state[i][1]==state[i][2]:
                 if state[i][0]==piece_values['r_piece']:
-                    return 1, True
+                    if player == 1:
+                        return 1, True
+                    else:
+                        return 0, True
                 if state[i][0]==piece_values['b_piece']:
-                    return 1, True
+                    if player == -1:
+                        return 1, True
+                    else:
+                        return 0, True
         for i in range(3):
             if state[0][i]==state[1][i] and state[1][i]==state[2][i]:
                 if state[0][i]==piece_values['r_piece']:
-                    return 1, True
+                    if player == 1:
+                        return 1, True
+                    else:
+                        return 0, True
                 if state[0][i]==piece_values['b_piece']:
-                    return 1, True
+                    if player == -1:
+                        return 1, True
+                    else:
+                        return 0, True
         v1 = state[0][0]
         v2 = state[1][1]
         v3 = state[2][2]
         if v1==v2 and v2==v3:
             if v1==piece_values['r_piece']:
-                return 1, True
+                if player == 1:
+                    return 1, True
+                else:
+                    return 0, True
             if v1==piece_values['b_piece']:
-                return 1, True
+                if player == -1:
+                    return 1, True
+                else:
+                    return 0, True
         v1 = state[0][2]
         v3 = state[2][0]
         if v1==v2 and v2==v3:
             if v1==piece_values['r_piece']:
-                return 1, True
+                if player == 1:
+                    return 1, True
+                else:
+                    return 0, True
             if v1==piece_values['b_piece']:
-                return 1, True
+                if player == -1:
+                    return 1, True
+                else:
+                    return 0, True
         if_zero = False
         for i in range(3):
             for j in range(3):
                 if state[i][j] == 0:
                     if_zero = True
         if if_zero:
-            return 0.0, False
+            return 0.5, False
         else:
-            return 0.0, True
+            return 0.5, True
     
     def get_opponent(self, player):
         return -player
     
     def get_opponent_value(self, value):
-        return -value
+        return 1-value
     
     def change_perspective(self, state, player):
-        return state * player
+        if player > 0:
+            return state
+        else:
+            board = state[::-1,::-1]
+            for i in range(3):
+                for j in range(3):
+                    board[i][j] = -board[i][j]
+            return board
 
 
