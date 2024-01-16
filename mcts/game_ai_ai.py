@@ -37,13 +37,15 @@ class AIAIGame:
             if self.red:
                 self.r_player.update_board(self.chess_board.board_states())
                 self.r_player.check_moves()
-                posi, move = self.r_player.random_action()
+                # posi, move = self.r_player.random_action()
+                posi, move = self.r_player.mcts_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             else:
                 self.b_player.update_board(self.chess_board.board_states())
                 self.b_player.check_moves()
-                posi, move = self.b_player.random_action()
+                # posi, move = self.b_player.random_action()
+                posi, move = self.b_player.mcts_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
 

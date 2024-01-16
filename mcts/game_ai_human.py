@@ -44,7 +44,8 @@ class AIHumanGame:
                     self.b_player.check_moves()
                 else:
                     self.r_player.update_board(self.chess_board.board_states())
-                    posi, move = self.r_player.random_action()
+                    # posi, move = self.r_player.random_action()
+                    posi, move = self.r_player.mcts_action()
                     self.chess_board.move_piece(posi, move)
                     self.red = not self.red
         
