@@ -38,14 +38,13 @@ class TicTacToe:
         return state
     
     def get_valid_moves(self, state): 
-        # valid_moves = []
-        # for i in range(self.row_count):
-        #     for j in range(self.column_count):
-        #         if state[i][j] == 0:
-        #             action = self.actions_encode[(i,j)]
-        #             valid_moves.append(action)
-        # return valid_moves
-        return (state.reshape(-1) == 0).astype(np.uint8)
+        valid_moves = []
+        for i in range(self.row_count):
+            for j in range(self.column_count):
+                if state[i][j] == 0:
+                    action = self.actions_encode[(i,j)]
+                    valid_moves.append(action)
+        return valid_moves
     
     def valid_moves_mask(self, valid_moves):
         mask = []
@@ -54,7 +53,7 @@ class TicTacToe:
                 mask.append(1)
             else:
                 mask.append(0)
-        return mask
+        return np.array(mask, dtype=np.uint8)
     
     def get_value_and_terminated(self, state):
         for i in range(3):

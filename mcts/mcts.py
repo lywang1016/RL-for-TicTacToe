@@ -1,5 +1,4 @@
 import math
-import random
 import numpy as np
 
 class Node:
@@ -11,7 +10,7 @@ class Node:
         self.action_taken = action_taken
         
         self.children = []
-        self.expandable_moves = game.get_valid_moves(state)
+        self.expandable_moves = game.valid_moves_mask(game.get_valid_moves(state))
         
         self.visit_count = 0
         self.value_sum = 0
@@ -57,7 +56,7 @@ class Node:
         rollout_state = self.state.copy()
         rollout_player = 1
         while True:
-            valid_moves = self.game.get_valid_moves(rollout_state)
+            valid_moves = self.game.valid_moves_mask(self.game.get_valid_moves(rollout_state))
             action = np.random.choice(np.where(valid_moves == 1)[0])
             rollout_state = self.game.get_next_state(rollout_state, action, rollout_player)
             value, is_terminal = self.game.get_value_and_terminated(rollout_state)
@@ -109,6 +108,14 @@ class MCTS:
     
 
 if __name__ == '__main__':
-    state = np.zeros((3, 3))
-    valid_moves = (state.reshape(-1) == 0).astype(np.uint8)
-    print(type(valid_moves))
+    # state = np.zeros((3, 3))
+    # valid_moves = (state.reshape(-1) == 0).astype(np.uint8)
+    # print(type(valid_moves))
+    from tictactoe import TicTacToe
+    tictactoe = TicTacToe()
+    state = tictactoe.get_initial_state()
+    state = tictactoe.get_next_state(state, 2, 1)
+    moves_next = tictactoe.get_valid_moves(state)
+    print(moves_next)
+    valid_moves = tictactoe.valid_moves_mask(moves_next)
+    print(valid_moves)
