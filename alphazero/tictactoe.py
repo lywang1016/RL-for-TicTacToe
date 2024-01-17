@@ -46,7 +46,7 @@ class TicTacToe:
             return state
     
     def get_valid_moves(self, state, player):               # state in view of player 1 and player is going to play
-        state = self.change_perspective(state, player)
+        state = self.change_perspective(state.copy(), player)
         valid_moves = []
         for i in range(self.row_count):
             for j in range(self.column_count):
