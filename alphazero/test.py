@@ -14,7 +14,7 @@ if __name__ == '__main__':
     elif args.type == 2:
         game = AIHumanGame()
     else:
-        game = AIAIGame()
+        game = AIAIGame(if_gui=False)
 
     rwin = 0
     bwin = 0

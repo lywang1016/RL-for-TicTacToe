@@ -11,7 +11,7 @@ class Node:
         self.action_taken = action_taken
         
         self.children = []
-        self.expandable_moves = game.valid_moves_mask(game.get_valid_moves(state, player))
+        self.expandable_moves = game.valid_moves_mask(game.get_valid_moves(state.copy(), player))
         
         self.visit_count = 0
         self.value_sum = 0
@@ -46,7 +46,7 @@ class Node:
         self.children.append(child)
         return child
     
-    def simulate(self, root_player):
+    def simulate(self):
         value, is_terminal = self.game.get_value_and_terminated(self.state, self.parent.player)
         value = self.game.get_opponent_value(value)
         if is_terminal:
@@ -55,12 +55,12 @@ class Node:
         rollout_state = self.state.copy()
         rollout_player = self.player
         while True:
-            valid_moves = self.game.valid_moves_mask(self.game.get_valid_moves(rollout_state, rollout_player))
+            valid_moves = self.game.valid_moves_mask(self.game.get_valid_moves(rollout_state.copy(), rollout_player))
             action = np.random.choice(np.where(valid_moves == 1)[0])
-            rollout_state = self.game.get_next_state(rollout_state, action, rollout_player)
+            rollout_state = self.game.get_next_state(rollout_state.copy(), action, rollout_player)
             value, is_terminal = self.game.get_value_and_terminated(rollout_state, rollout_player)
             if is_terminal:
-                if rollout_player != root_player:
+                if rollout_player != self.player:
                     value = self.game.get_opponent_value(value)
                 return value 
             
@@ -73,7 +73,6 @@ class Node:
         value = self.game.get_opponent_value(value)
         if self.parent is not None:
             self.parent.backpropagate(value)  
-
 
 class MCTS:
     def __init__(self, game, args):
@@ -94,13 +93,35 @@ class MCTS:
             
             if not is_terminal:
                 node = node.expand()
-                value = node.simulate(root.player)
+                value = node.simulate()
                 
             node.backpropagate(value)    
-            
-            
+
         action_probs = np.zeros(self.game.action_size)
         for child in root.children:
             action_probs[child.action_taken] = child.visit_count
         action_probs /= np.sum(action_probs)
         return action_probs
+    
+if __name__ == '__main__':
+    import matplotlib.pyplot as plt
+    from tictactoe import TicTacToe
+
+    tictactoe = TicTacToe()
+    args = {
+        'C': 2,
+        'num_searches': 10000
+    }
+    mcts = MCTS(tictactoe, args)
+    state = tictactoe.get_initial_state()
+    state[0,0] = -1
+    state[0,1] = 1
+    state[0,2] = 1
+    state[1,0] = 1
+    state[1,1] = -1
+    state[2,0] = -1
+    # state[2,2] = 1
+    mcts_probs = mcts.search(state, player=1)
+
+    plt.bar(range(tictactoe.action_size), mcts_probs)
+    plt.show()
