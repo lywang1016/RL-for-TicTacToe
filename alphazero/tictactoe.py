@@ -142,4 +142,15 @@ class TicTacToe:
                     board[i][j] = -board[i][j]
             return board
 
-
+    def get_encoded_state(self, state, player): # state in view of player 1 and encode at player's view
+        state = self.change_perspective(state.copy(), player)
+        encoded_state = np.zeros((3, self.row_count, self.column_count), dtype=np.float32)
+        for i in range(self.row_count):
+            for j in range(self.column_count):
+                if state[i][j] > 0:
+                    encoded_state[0][i][j] = state[i][j]
+                elif state[i][j] == 0:
+                    encoded_state[1][i][j] = 1
+                else:
+                    encoded_state[2][i][j] = -state[i][j]
+        return encoded_state
