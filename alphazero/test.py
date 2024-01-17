@@ -5,16 +5,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_game', type=int, default=1, help='Number of game play')
     parser.add_argument('--type', type=int, default=0, help='type of game')
+    parser.add_argument('--ai_action_type', type=int, default=2, help='type of game')
     args = parser.parse_args()
 
     if args.type == 0:
         game = HumanHumanGame()
     elif args.type == 1:
-        game = HumanAIGame()
+        game = HumanAIGame(args.ai_action_type)
     elif args.type == 2:
-        game = AIHumanGame()
+        game = AIHumanGame(args.ai_action_type)
     else:
-        game = AIAIGame(if_gui=False)
+        game = AIAIGame(args.ai_action_type, if_gui=False)
 
     rwin = 0
     bwin = 0

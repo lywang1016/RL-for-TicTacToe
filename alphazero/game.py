@@ -5,7 +5,8 @@ from player_human import HumanPlayer
 from player_ai import AIPlayer
 
 class AIHumanGame:
-    def __init__(self):
+    def __init__(self, ai_action_type):
+        self.ai_action_type = ai_action_type
         self.gui = GUI()
         self.gui_update = 0.1
         self.red = True
@@ -43,8 +44,14 @@ class AIHumanGame:
                     self.b_player.check_moves()
                 else:
                     self.r_player.update_board(self.chess_board.board_states())
-                    # posi, move = self.r_player.random_action()
-                    posi, move = self.r_player.mcts_action()
+                    if self.ai_action_type == 0:
+                        posi, move = self.r_player.random_action()
+                    elif self.ai_action_type == 1:
+                        posi, move = self.r_player.mcts_action()
+                    elif self.ai_action_type == 2:
+                        posi, move = self.r_player.model_action()
+                    else:
+                        posi, move = self.r_player.random_action()
                     self.chess_board.move_piece(posi, move)
                     self.red = not self.red
         
@@ -59,7 +66,8 @@ class AIHumanGame:
         return winner
 
 class HumanAIGame:
-    def __init__(self):
+    def __init__(self, ai_action_type):
+        self.ai_action_type = ai_action_type
         self.gui = GUI()
         self.gui_update = 0.1
         self.red = True
@@ -97,8 +105,14 @@ class HumanAIGame:
                     self.r_player.check_moves()
                 else:
                     self.b_player.update_board(self.chess_board.board_states())
-                    # posi, move = self.b_player.random_action()
-                    posi, move = self.b_player.mcts_action()
+                    if self.ai_action_type == 0:
+                        posi, move = self.b_player.random_action()
+                    elif self.ai_action_type == 1:
+                        posi, move = self.b_player.mcts_action()
+                    elif self.ai_action_type == 2:
+                        posi, move = self.b_player.model_action()
+                    else:
+                        posi, move = self.b_player.random_action()
                     self.chess_board.move_piece(posi, move)
                     self.red = not self.red
         
@@ -113,7 +127,8 @@ class HumanAIGame:
         return winner
 
 class AIAIGame:
-    def __init__(self, if_gui=True):
+    def __init__(self, ai_action_type, if_gui=True):
+        self.ai_action_type = ai_action_type
         self.if_gui = if_gui
         self.red = True
         self.chess_board = ChessBoard()
@@ -145,15 +160,27 @@ class AIAIGame:
             if self.red:
                 self.r_player.update_board(self.chess_board.board_states())
                 self.r_player.check_moves()
-                # posi, move = self.r_player.random_action()
-                posi, move = self.r_player.mcts_action()
+                if self.ai_action_type == 0:
+                    posi, move = self.r_player.random_action()
+                elif self.ai_action_type == 1:
+                    posi, move = self.r_player.mcts_action()
+                elif self.ai_action_type == 2:
+                    posi, move = self.r_player.model_action()
+                else:
+                    posi, move = self.r_player.random_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             else:
                 self.b_player.update_board(self.chess_board.board_states())
                 self.b_player.check_moves()
-                # posi, move = self.b_player.random_action()
-                posi, move = self.b_player.mcts_action()
+                if self.ai_action_type == 0:
+                    posi, move = self.b_player.random_action()
+                elif self.ai_action_type == 1:
+                    posi, move = self.b_player.mcts_action()
+                elif self.ai_action_type == 2:
+                    posi, move = self.b_player.model_action()
+                else:
+                    posi, move = self.b_player.random_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
 
