@@ -19,7 +19,7 @@ class AIPlayer:
 
         args = {
             'C': 2,
-            'num_searches': 2000
+            'num_searches': 1000
         }
         self.mcts = MCTS(self.tictactoe, args)
 
