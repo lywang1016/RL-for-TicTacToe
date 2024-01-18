@@ -79,7 +79,7 @@ class AIPlayer:
             mask = self.tictactoe.valid_moves_mask(valid_moves)
             policy *= mask
             policy /= np.sum(policy)
-            print(policy)
+            # print(policy)
             action = np.argmax(policy)
             position = self.tictactoe.actions_decode[action]
             if self.player != 1:

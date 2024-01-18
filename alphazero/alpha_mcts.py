@@ -2,7 +2,7 @@ import math
 import torch as T
 import numpy as np
 
-class Node:
+class AlphaNode:
     def __init__(self, game, args, state, player, parent=None, action_taken=None, prior=0):
         self.game = game
         self.args = args
@@ -44,7 +44,7 @@ class Node:
             if prob > 0:
                 child_state = self.state.copy()
                 child_state = self.game.get_next_state(child_state, action, self.player)
-                child = Node(self.game, self.args, child_state, self.game.get_opponent(self.player), self, action, prob)
+                child = AlphaNode(self.game, self.args, child_state, self.game.get_opponent(self.player), self, action, prob)
                 self.children.append(child)
             
     def backpropagate(self, value):
@@ -55,7 +55,7 @@ class Node:
         if self.parent is not None:
             self.parent.backpropagate(value)  
 
-class MCTS:
+class AlphaMCTS:
     def __init__(self, game, args, model):
         self.game = game
         self.args = args
@@ -63,7 +63,7 @@ class MCTS:
         
     @T.no_grad()
     def search(self, state, player):
-        root = Node(self.game, self.args, state, player)
+        root = AlphaNode(self.game, self.args, state, player)
         
         for search in range(self.args['num_searches']):
             node = root
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     model = ResNet(tictactoe, 4, 64)
     model.eval()
 
-    mcts = MCTS(tictactoe, args, model)
+    mcts = AlphaMCTS(tictactoe, args, model)
 
     state = tictactoe.get_initial_state()
 

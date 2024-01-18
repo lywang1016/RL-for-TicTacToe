@@ -3,7 +3,7 @@ import torch as T
 import torch.nn.functional as F
 import numpy as np
 from tqdm import trange
-from alpha_mcts import MCTS
+from alpha_mcts import AlphaMCTS
 
 class AlphaZero:
     def __init__(self, model, optimizer, game, args):
@@ -11,7 +11,7 @@ class AlphaZero:
         self.optimizer = optimizer
         self.game = game
         self.args = args
-        self.mcts = MCTS(game, args, model)
+        self.mcts = AlphaMCTS(game, args, model)
         
     def selfPlay(self):
         memory = []
