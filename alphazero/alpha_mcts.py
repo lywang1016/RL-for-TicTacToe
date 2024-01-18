@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
     args = {
         'C': 2,
-        'num_searches': 1000
+        'num_searches': 300
     }
 
     model = ResNet(tictactoe, 4, 64)
@@ -123,7 +123,9 @@ if __name__ == '__main__':
     while True:
         print(state)
         
-        if player == 1:
+        if player == -1:
+            neutral_state = tictactoe.change_perspective(state.copy(), player)
+            print(neutral_state)
             valid_moves = tictactoe.get_valid_moves(state, player)
             print("valid_moves", valid_moves)
             action = int(input(f"{player}:"))

@@ -24,7 +24,7 @@ class AIPlayer:
         self.mcts = MCTS(self.tictactoe, args)
 
         self.model = ResNet(self.tictactoe, 4, 64)
-        self.model.load_state_dict(T.load('model/model_20.pth'))
+        self.model.load_state_dict(T.load('model/model_2.pth'))
         self.model.eval()
 
     def reset(self):
@@ -55,7 +55,7 @@ class AIPlayer:
         if length > 0:
             state = copy.deepcopy(self.state)
             mcts_probs = self.mcts.search(state, self.player)
-            print(mcts_probs)
+            # print(mcts_probs)
             action = np.argmax(mcts_probs)
             position = self.tictactoe.actions_decode[action]
             if self.player != 1:
@@ -106,12 +106,12 @@ if __name__ == '__main__':
 
     args = {
         'C': 2,
-        'num_searches': 1000
+        'num_searches': 2000
     }
     mcts = MCTS(tictactoe, args)
 
     model = ResNet(tictactoe, 4, 64)
-    model.load_state_dict(T.load('model/model_5.pth'))
+    model.load_state_dict(T.load('model/model_2.pth'))
     model.eval()
 
     state = tictactoe.get_initial_state()

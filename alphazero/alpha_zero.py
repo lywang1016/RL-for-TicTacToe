@@ -96,8 +96,8 @@ if __name__ == '__main__':
 
     args = {
         'C': 2,
-        'num_searches': 60,
-        'num_iterations': 5,
+        'num_searches': 300,
+        'num_iterations': 2,
         'num_selfPlay_iterations': 500,
         'num_epochs': 8,
         'batch_size': 64,
