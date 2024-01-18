@@ -8,13 +8,26 @@ if __name__ == '__main__':
     parser.add_argument('--ai_action_type', type=int, default=2, help='type of game')
     args = parser.parse_args()
 
+    if args.ai_action_type == 0:
+        print("AI random action")
+    elif args.ai_action_type == 1:
+        print("AI mcts action")
+    elif args.ai_action_type == 2:
+        print("AI model action")
+    else:
+        print("AI random action")
+
     if args.type == 0:
+        print("Human vs. Human")
         game = HumanHumanGame()
     elif args.type == 1:
+        print("Human vs. AI")
         game = HumanAIGame(args.ai_action_type)
     elif args.type == 2:
+        print("AI vs. Human")
         game = AIHumanGame(args.ai_action_type)
     else:
+        print("AI vs. AI")
         game = AIAIGame(args.ai_action_type, if_gui=False)
 
     rwin = 0
