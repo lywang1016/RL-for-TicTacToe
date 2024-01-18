@@ -81,6 +81,7 @@ class AlphaMCTS:
                 )
                 policy = T.softmax(policy, axis=1).squeeze(0).cpu().numpy()
                 value = value.item()
+                value = self.game.get_opponent_value(value)
 
                 valid_moves = self.game.get_valid_moves(node.state.copy(), node.player)
                 mask = self.game.valid_moves_mask(valid_moves)

@@ -19,12 +19,12 @@ class AIPlayer:
 
         args = {
             'C': 2,
-            'num_searches': 1000
+            'num_searches': 2000
         }
         self.mcts = MCTS(self.tictactoe, args)
 
         self.model = ResNet(self.tictactoe, 4, 64)
-        self.model.load_state_dict(T.load('model/model_2.pth'))
+        self.model.load_state_dict(T.load('model/model_5.pth'))
         self.model.eval()
 
     def reset(self):
