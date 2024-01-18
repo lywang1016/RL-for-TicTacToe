@@ -62,6 +62,11 @@ idx_rotate_180lr = {
     9: (0, 2)
 }
 
+def softmax(x):
+    """Compute softmax values for each sets of scores in x."""
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
+
 def action_change_perspective(posi):
     posi_new = (2-posi[0], 2-posi[1])
     return posi_new

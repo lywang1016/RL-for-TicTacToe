@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import trange
 from alpha_mcts import AlphaMCTS
+from utils import softmax
 
 class AlphaZero:
     def __init__(self, model, optimizer, game, args):
@@ -21,7 +22,9 @@ class AlphaZero:
         while True:
             action_probs = self.mcts.search(state.copy(), player)
             memory.append((state.copy(), action_probs, player))
-            action = np.random.choice(self.game.action_size, p=action_probs)
+            temperature_action_probs = action_probs ** (1 / self.args['temperature'])
+            temperature_action_probs = softmax(temperature_action_probs)
+            action = np.random.choice(self.game.action_size, p=temperature_action_probs)
             state = self.game.get_next_state(state.copy(), action, player)
 
             value, is_terminal = self.game.get_value_and_terminated(state, player)
@@ -76,8 +79,10 @@ class AlphaZero:
                 self.train(memory)
             
             if (iteration+1)%self.args['save_every'] == 0:
-                T.save(self.model.state_dict(), self.args['model_path']+f"model_{iteration+1}.pth")
-                T.save(self.optimizer.state_dict(), self.args['model_path']+f"optimizer_{iteration+1}.pth")
+                T.save(self.model.state_dict(), self.args['model_path']+"model.pth")
+                T.save(self.optimizer.state_dict(), self.args['model_path']+"optimizer.pth")
+                # T.save(self.model.state_dict(), self.args['model_path']+f"model_{iteration+1}.pth")
+                # T.save(self.optimizer.state_dict(), self.args['model_path']+f"optimizer_{iteration+1}.pth")
 
 if __name__ == '__main__':
     import os
@@ -88,19 +93,23 @@ if __name__ == '__main__':
     tictactoe = TicTacToe()
 
     model = ResNet(tictactoe, 4, 64)
+    # model.load_state_dict(T.load('model/model.pth'))
 
-    optimizer = T.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = T.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
 
     if not os.path.exists('model'): 
         os.mkdir('model')
 
     args = {
         'C': 2,
-        'num_searches': 300,
-        'num_iterations': 5,
-        'num_selfPlay_iterations': 200,
+        'num_searches': 500,
+        'num_iterations': 2,
+        'num_selfPlay_iterations': 600,
         'num_epochs': 8,
         'batch_size': 64,
+        'temperature': 1.25,
+        'dirichlet_epsilon': 0.25,
+        'dirichlet_alpha': 0.3,
         'save_every': 1,
         'model_path': 'model/'
     }

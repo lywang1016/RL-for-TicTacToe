@@ -3,7 +3,7 @@ import torch as T
 import numpy as np
 
 class AlphaNode:
-    def __init__(self, game, args, state, player, parent=None, action_taken=None, prior=0):
+    def __init__(self, game, args, state, player, parent=None, action_taken=None, prior=0, visit_count=0):
         self.game = game
         self.args = args
         self.state = state
@@ -14,7 +14,7 @@ class AlphaNode:
         
         self.children = []
         
-        self.visit_count = 0
+        self.visit_count = visit_count
         self.value_sum = 0
         
     def is_fully_expanded(self):
@@ -63,7 +63,19 @@ class AlphaMCTS:
         
     @T.no_grad()
     def search(self, state, player):
-        root = AlphaNode(self.game, self.args, state, player)
+        root = AlphaNode(self.game, self.args, state, player, visit_count=1)
+
+        policy, _ = self.model(
+            T.tensor(self.game.get_encoded_state(root.state, root.player), device=self.model.device).unsqueeze(0)
+        )
+        policy = T.softmax(policy, axis=1).squeeze(0).cpu().numpy()
+        policy = (1 - self.args['dirichlet_epsilon']) * policy + self.args['dirichlet_epsilon'] \
+            * np.random.dirichlet([self.args['dirichlet_alpha']] * self.game.action_size)
+        valid_moves = self.game.get_valid_moves(root.state, root.player)
+        mask = self.game.valid_moves_mask(valid_moves)
+        policy *= mask
+        policy /= np.sum(policy)
+        root.expand(policy)
         
         for search in range(self.args['num_searches']):
             node = root
@@ -111,7 +123,9 @@ if __name__ == '__main__':
 
     args = {
         'C': 2,
-        'num_searches': 300
+        'num_searches': 300,
+        'dirichlet_epsilon': 0.25,
+        'dirichlet_alpha': 0.3,
     }
 
     model = ResNet(tictactoe, 4, 64)
