@@ -1,0 +1,18 @@
+{
+    'learn_method_r': 'sarsa',
+    'eps_r': 0.05,
+    'learn_rate_r': 0.05,
+    'discount_r': 1,
+    'red_ai_q_sarsa_val_path': 'tabular\q_value\red_q_sarsa_value.hdf5',
+    'red_ai_q_learning_val_path': 'tabular\q_value\red_q_learning_value.hdf5',
+    'red_ai_q1_val_path': 'tabular\q_value\red_q1_value.hdf5',
+    'red_ai_q2_val_path': 'tabular\q_value\red_q2_value.hdf5',
+    'learn_method_b': 'sarsa',
+    'eps_b': 0.05,
+    'learn_rate_b': 0.05,
+    'discount_b': 1,
+    'black_ai_q_sarsa_val_path': 'tabular\q_value\black_q_sarsa_value.hdf5',
+    'black_ai_q_learning_val_path': 'tabular\q_value\black_q_learning_value.hdf5',
+    'black_ai_q1_val_path': 'tabular\q_value\black_q1_value.hdf5',
+    'black_ai_q2_val_path': 'tabular\q_value\black_q2_value.hdf5'
+}
