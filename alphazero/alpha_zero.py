@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     tictactoe = TicTacToe()
 
-    model = ResNet(tictactoe, 6, 128)
+    model = ResNet(tictactoe, 4, 64)
     # model.load_state_dict(T.load('model/model.pth'))
 
     optimizer = T.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
@@ -104,7 +104,7 @@ if __name__ == '__main__':
         'C': 2,
         'num_searches': 200,
         'num_iterations': 3,
-        'num_selfPlay_iterations': 800,
+        'num_selfPlay_iterations': 500,
         'num_epochs': 8,
         'batch_size': 64,
         'temperature': 1.25,

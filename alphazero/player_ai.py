@@ -23,7 +23,7 @@ class AIPlayer:
         }
         self.mcts = MCTS(self.tictactoe, args)
 
-        self.model = ResNet(self.tictactoe, 6, 128)
+        self.model = ResNet(self.tictactoe, 4, 64)
         self.model.load_state_dict(T.load('model/model.pth'))
         self.model.eval()
 
