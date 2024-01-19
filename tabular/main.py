@@ -20,8 +20,8 @@ def human_human(total):
     print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
     print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
 
-def human_ai(total):
-    game = HumanAIGame()
+def human_ai(total, esp):
+    game = HumanAIGame(esp)
     rwin = 0
     bwin = 0
     t = 0
@@ -37,8 +37,8 @@ def human_ai(total):
     print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
     print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
 
-def ai_human(total):
-    game = AIHumanGame()
+def ai_human(total, esp):
+    game = AIHumanGame(esp)
     rwin = 0
     bwin = 0
     t = 0
@@ -54,10 +54,10 @@ def ai_human(total):
     print("B win times: " + str(bwin) + "\tB not lose rate: " + str((bwin+t) / total))
     print("Tie times: " + str(t) + "\t\tTie rate: " + str(t / total))
 
-def ai_ai(total):
+def ai_ai(total, esp):
     if not os.path.exists('q_value'): 
         os.mkdir('q_value')
-    game = AIAIGame(if_gui=False)
+    game = AIAIGame(esp, if_gui=False)
     rwin = 0
     bwin = 0
     t = 0
@@ -77,6 +77,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_game', type=int, default=1, help='Number of game play')
     parser.add_argument('--type', type=int, default=0, help='type of game')
+    parser.add_argument('--esp', type=float, default=0.0, help='AI eps greedy')
     args = parser.parse_args()
 
     if args.type == 0:
@@ -84,10 +85,10 @@ if __name__ == '__main__':
         human_human(args.num_game)
     elif args.type == 1:
         print("Human vs. AI")
-        human_ai(args.num_game)
+        human_ai(args.num_game, args.esp)
     elif args.type == 2:
         print("AI vs. Human")
-        ai_human(args.num_game)
+        ai_human(args.num_game, args.esp)
     else:
         print("AI vs. AI")
-        ai_ai(args.num_game)
+        ai_ai(args.num_game, args.esp)

@@ -8,7 +8,7 @@ from constant import posi_idx_map, idx_rotate_180, idx_rotate_lr, idx_rotate_180
 from player import Player
 
 class AIPlayer(Player):
-    def __init__(self, color):
+    def __init__(self, color, eps):
         pwd = os.getcwd()
         root_dir = os.path.abspath(os.path.dirname(pwd) + os.path.sep + '.')
 
@@ -23,9 +23,10 @@ class AIPlayer(Player):
         self.q1 = {}
         self.q2 = {}
 
+        self.eps = eps
         with open('config.yaml') as f:
             self.config = yaml.load(f, Loader=yaml.FullLoader)
-        self.eps = self.config['eps_r']
+        # self.eps = self.config['eps_r']
         self.lr = self.config['learn_rate_r']
         self.gamma = self.config['discount_r']
         self.learn_method = self.config['learn_method_r']
@@ -40,7 +41,7 @@ class AIPlayer(Player):
             self.init_action = True
         if color == 'b':
             self.learn_method = self.config['learn_method_b']
-            self.eps = self.config['eps_b']
+            # self.eps = self.config['eps_b']
             self.lr = self.config['learn_rate_b']
             self.gamma = self.config['discount_b']
             if self.learn_method == 'q_learning':
