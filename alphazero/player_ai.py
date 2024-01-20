@@ -20,7 +20,7 @@ class AIPlayer:
 
         args = {
             'C': 2,
-            'num_searches': 1000
+            'num_searches': 2000
         }
         self.mcts = MCTS(self.tictactoe, args)
 
@@ -30,9 +30,9 @@ class AIPlayer:
 
         args = {
             'C': 2,
-            'num_searches': 60,
-            'dirichlet_epsilon': 0.25,
-            'dirichlet_alpha': 0.3,
+            'num_searches': 80,
+            'dirichlet_epsilon': 0.0,
+            'dirichlet_alpha': 0.1,
         }
         self.alpha_mcts = AlphaMCTS(self.tictactoe, args, self.model)
 
@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     args = {
         'C': 2,
-        'num_searches': 1000
+        'num_searches': 2000
     }
     mcts = MCTS(tictactoe, args)
 

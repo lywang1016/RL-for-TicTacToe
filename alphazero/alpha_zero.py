@@ -80,7 +80,7 @@ class AlphaZero:
             
             if (iteration+1)%self.args['save_every'] == 0:
                 T.save(self.model.state_dict(), self.args['model_path']+"model.pth")
-                T.save(self.optimizer.state_dict(), self.args['model_path']+"optimizer.pth")
+                # T.save(self.optimizer.state_dict(), self.args['model_path']+"optimizer.pth")
                 # T.save(self.model.state_dict(), self.args['model_path']+f"model_{iteration+1}.pth")
                 # T.save(self.optimizer.state_dict(), self.args['model_path']+f"optimizer_{iteration+1}.pth")
 
