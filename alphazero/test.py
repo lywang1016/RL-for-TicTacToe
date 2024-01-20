@@ -4,31 +4,32 @@ from game import AIAIGame, AIHumanGame, HumanAIGame, HumanHumanGame
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_game', type=int, default=1, help='Number of game play')
-    parser.add_argument('--type', type=int, default=0, help='type of game')
-    parser.add_argument('--ai_action_type', type=int, default=2, help='type of game')
+    parser.add_argument('--type', type=int, default=1, help='type of game')
+    parser.add_argument('--ai_action_type', type=int, default=3, help='AI action type')
     args = parser.parse_args()
-
-    if args.ai_action_type == 0:
-        print("AI random action")
-    elif args.ai_action_type == 1:
-        print("AI mcts action")
-    elif args.ai_action_type == 2:
-        print("AI model action")
-    else:
-        print("AI random action")
 
     if args.type == 0:
         print("Human vs. Human")
         game = HumanHumanGame()
-    elif args.type == 1:
-        print("Human vs. AI")
-        game = HumanAIGame(args.ai_action_type)
-    elif args.type == 2:
-        print("AI vs. Human")
-        game = AIHumanGame(args.ai_action_type)
     else:
-        print("AI vs. AI")
-        game = AIAIGame(args.ai_action_type, if_gui=False)
+        if args.ai_action_type == 0:
+            print("AI random action")
+        elif args.ai_action_type == 1:
+            print("AI mcts action")
+        elif args.ai_action_type == 2:
+            print("AI model action")
+        else:
+            print("AI alpha mcts action")
+
+        if args.type == 1:
+            print("Human vs. AI")
+            game = HumanAIGame(args.ai_action_type)
+        elif args.type == 2:
+            print("AI vs. Human")
+            game = AIHumanGame(args.ai_action_type)
+        else:
+            print("AI vs. AI")
+            game = AIAIGame(args.ai_action_type, if_gui=False)
 
     rwin = 0
     bwin = 0

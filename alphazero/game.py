@@ -51,7 +51,7 @@ class AIHumanGame:
                     elif self.ai_action_type == 2:
                         posi, move = self.r_player.model_action()
                     else:
-                        posi, move = self.r_player.random_action()
+                        posi, move = self.r_player.alpha_mcts_action()
                     self.chess_board.move_piece(posi, move)
                     self.red = not self.red
         
@@ -112,7 +112,7 @@ class HumanAIGame:
                     elif self.ai_action_type == 2:
                         posi, move = self.b_player.model_action()
                     else:
-                        posi, move = self.b_player.random_action()
+                        posi, move = self.b_player.alpha_mcts_action()
                     self.chess_board.move_piece(posi, move)
                     self.red = not self.red
         
@@ -167,7 +167,7 @@ class AIAIGame:
                 elif self.ai_action_type == 2:
                     posi, move = self.r_player.model_action()
                 else:
-                    posi, move = self.r_player.random_action()
+                    posi, move = self.r_player.alpha_mcts_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
             else:
@@ -180,7 +180,7 @@ class AIAIGame:
                 elif self.ai_action_type == 2:
                     posi, move = self.b_player.model_action()
                 else:
-                    posi, move = self.b_player.random_action()
+                    posi, move = self.b_player.alpha_mcts_action()
                 self.chess_board.move_piece(posi, move)
                 self.red = not self.red
 
