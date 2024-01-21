@@ -85,10 +85,10 @@ if __name__ == '__main__':
         human_human(args.num_game)
     elif args.type == 1:
         print("Human vs. AI")
-        human_ai(args.num_game, args.esp)
+        human_ai(args.num_game, args.eps)
     elif args.type == 2:
         print("AI vs. Human")
-        ai_human(args.num_game, args.esp)
+        ai_human(args.num_game, args.eps)
     else:
         print("AI vs. AI")
-        ai_ai(args.num_game, args.esp)
+        ai_ai(args.num_game, args.eps)
