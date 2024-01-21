@@ -77,7 +77,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--num_game', type=int, default=1, help='Number of game play')
     parser.add_argument('--type', type=int, default=0, help='type of game')
-    parser.add_argument('--esp', type=float, default=0.0, help='AI eps greedy')
+    parser.add_argument('--eps', type=float, default=0.0, help='AI eps greedy')
     args = parser.parse_args()
 
     if args.type == 0:
