@@ -61,13 +61,13 @@ class HumanHumanGame():
         return winner
 
 class HumanAIGame():
-    def __init__(self):
+    def __init__(self, esp):
         self.gui = GUI()
         self.gui_update = 0.1
         self.red = True
         self.chess_board = ChessBoard()
         self.r_player = HumanPlayer('r')
-        self.b_player = AIPlayer('b')
+        self.b_player = AIPlayer('b', esp)
     
     def reset(self):
         self.chess_board.reset_board()
@@ -116,12 +116,12 @@ class HumanAIGame():
         return winner
 
 class AIHumanGame():
-    def __init__(self):
+    def __init__(self, esp):
         self.gui = GUI()
         self.gui_update = 0.1
         self.red = True
         self.chess_board = ChessBoard()
-        self.r_player = AIPlayer('r')
+        self.r_player = AIPlayer('r', esp)
         self.b_player = HumanPlayer('b')
     
     def reset(self):
@@ -171,15 +171,15 @@ class AIHumanGame():
         return winner
 
 class AIAIGame():
-    def __init__(self, if_gui=True):
+    def __init__(self, esp, if_gui=True):
         self.if_gui = if_gui
         self.red = True
         self.chess_board = ChessBoard()
         if self.if_gui:
             self.gui = GUI()
             self.gui_update = 0.1
-        self.r_player = AIPlayer('r')
-        self.b_player = AIPlayer('b')
+        self.r_player = AIPlayer('r', esp)
+        self.b_player = AIPlayer('b', esp)
     
     def reset(self):
         self.chess_board.reset_board()
