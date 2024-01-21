@@ -10,7 +10,7 @@ To select the algorithm, you first go to folder tabular, and open file of 'confi
 ```
 python main.py --num_game 80000 --type 3 --eps 0.05
 ```
-Where the argument 'type' = 3 means AI player vs. AI player. and the armument 'eps' is the rate of choose action randomly.
+Where the argument 'type' = 3 means AI player vs. AI player. and the argument 'eps' is the rate of choose action randomly.
 
 #### To test your model, you can run:
 ```
