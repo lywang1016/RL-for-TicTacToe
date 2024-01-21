@@ -44,7 +44,8 @@ class AlphaZero:
     def train(self, memory):
         random.shuffle(memory)
         for batchIdx in range(0, len(memory), self.args['batch_size']):
-            sample = memory[batchIdx:min(len(memory) - 1, batchIdx + self.args['batch_size'])] 
+            # sample = memory[batchIdx:min(len(memory) - 1, batchIdx + self.args['batch_size'])] 
+            sample = memory[batchIdx:batchIdx+self.args['batch_size']]
             state, policy_targets, value_targets = zip(*sample)
             
             state, policy_targets, value_targets = np.array(state), np.array(policy_targets), np.array(value_targets).reshape(-1, 1)
@@ -79,39 +80,44 @@ class AlphaZero:
                 self.train(memory)
             
             if (iteration+1)%self.args['save_every'] == 0:
-                T.save(self.model.state_dict(), self.args['model_path']+"model.pth")
+                T.save(self.model.state_dict(), self.args['model_full_path'])
+                # T.save(self.model.state_dict(), self.args['model_path']+"model.pth")
                 # T.save(self.optimizer.state_dict(), self.args['model_path']+"optimizer.pth")
                 # T.save(self.model.state_dict(), self.args['model_path']+f"model_{iteration+1}.pth")
                 # T.save(self.optimizer.state_dict(), self.args['model_path']+f"optimizer_{iteration+1}.pth")
 
 if __name__ == '__main__':
     import os
+    import yaml
     import numpy as np
     from tictactoe import TicTacToe
     from network import ResNet
 
+    with open('config.yaml') as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+
     tictactoe = TicTacToe()
 
-    model = ResNet(tictactoe, 4, 64)
-    # model.load_state_dict(T.load('model/model.pth'))
+    model = ResNet(tictactoe, config['num_resBlocks'], config['num_hidden'])
+    # model.load_state_dict(T.load(self.config['model_full_path']))
 
-    optimizer = T.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
+    optimizer = T.optim.Adam(model.parameters(), lr=config['learn_rate'], weight_decay=config['weight_decay'])
 
     if not os.path.exists('model'): 
         os.mkdir('model')
 
     args = {
-        'C': 2,
-        'num_searches': 200,
-        'num_iterations': 3,
-        'num_selfPlay_iterations': 500,
-        'num_epochs': 8,
-        'batch_size': 64,
-        'temperature': 1.25,
-        'dirichlet_epsilon': 0.25,
-        'dirichlet_alpha': 0.3,
-        'save_every': 1,
-        'model_path': 'model/'
+        'C': config['C'],
+        'num_searches': config['num_Alpha_MCTS_training_searches'],
+        'num_iterations': config['num_iterations'],
+        'num_selfPlay_iterations': config['num_selfPlay_iterations'],
+        'num_epochs': config['num_epochs'],
+        'batch_size': config['batch_size'],
+        'temperature': config['temperature'],
+        'dirichlet_epsilon': config['dirichlet_epsilon'],
+        'dirichlet_alpha': config['dirichlet_alpha'],
+        'save_every': config['save_every'],
+        'model_full_path': config['model_full_path']
     }
 
     alphaZero = AlphaZero(model, optimizer, tictactoe, args)

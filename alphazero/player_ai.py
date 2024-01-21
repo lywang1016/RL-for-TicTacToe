@@ -1,5 +1,6 @@
 import copy
 import random
+import yaml
 import numpy as np
 import torch as T
 from tictactoe import TicTacToe
@@ -18,20 +19,23 @@ class AIPlayer:
         self.state = None
         self.valid_moves = []
 
+        with open('config.yaml') as f:
+            self.config = yaml.load(f, Loader=yaml.FullLoader)
+
         args = {
-            'C': 2,
-            'num_searches': 2000
+            'C': self.config['C'],
+            'num_searches': self.config['num_MCTS_searches']
         }
         self.mcts = MCTS(self.tictactoe, args)
 
-        self.model = ResNet(self.tictactoe, 4, 64)
-        self.model.load_state_dict(T.load('model/model.pth'))
+        self.model = ResNet(self.tictactoe, self.config['num_resBlocks'], self.config['num_hidden'])
+        self.model.load_state_dict(T.load(self.config['model_full_path']))
         self.model.eval()
 
         args = {
-            'C': 2,
-            'num_searches': 80,
-            'dirichlet_epsilon': 0.0,
+            'C': self.config['C'],
+            'num_searches': self.config['num_Alpha_MCTS_searches'],
+            'dirichlet_epsilon': 0.0,       # for evaluation we don't want add noise
             'dirichlet_alpha': 0.1,
         }
         self.alpha_mcts = AlphaMCTS(self.tictactoe, args, self.model)

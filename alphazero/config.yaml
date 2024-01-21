@@ -1,0 +1,20 @@
+{
+    'C': 2,
+    'num_MCTS_searches': 2000,
+    'num_Alpha_MCTS_searches': 80,
+    'num_Alpha_MCTS_training_searches': 200,
+    'num_resBlocks': 4,
+    'num_hidden': 64,
+    'learn_rate': 0.001,
+    'weight_decay': 0.0001,
+    'num_iterations': 6,
+    'num_selfPlay_iterations': 600,
+    'num_parallel_games': 200,
+    'num_epochs': 8,
+    'batch_size': 64,
+    'temperature': 1.25,
+    'dirichlet_epsilon': 0.25,
+    'dirichlet_alpha': 0.3,
+    'save_every': 1,
+    'model_full_path': 'model/model.pth'
+}
