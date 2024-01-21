@@ -1,5 +1,5 @@
 # RL-for-TicTacToe
-This is one of my personal project, aiming to learn Reinforcemnet learning. In this project, there are two implemtated methods: Tabular RL and AlphaZero.
+This is one of my personal project, aiming to learn Reinforcemnet learning. In this project, there are two implemented methods: Tabular RL and AlphaZero.
 
 ## Tabular Reinforcement Learning
 It support 3 algorithms: SARSA(on-policy), Q-learning(off-policy), and Double-Q-learning(off-policy).
