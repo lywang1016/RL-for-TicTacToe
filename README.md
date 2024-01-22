@@ -35,6 +35,8 @@ python main.py --num_game 1 --type 0
 ```
 
 ## AlphaZero
+My implementation is based on the code of the tutorial: [AlphaZero](https://github.com/foersterrobert/AlphaZero). The difference is in the tutorial, the network value head output is between -1 to 1. In my implementation, the network value head output is between 0 to 1. Because the win probability is always between 0 to 1, so the value output also between 0 to 1 is more natural. Accordingly, the game logic is also slightly different.
+
 You first go to folder alphazero. Again, all parameters are in file 'config.yaml'.
 
 The AI player have 3 algorithms. First, the AI can make decision only based on MCTS. To get good results, the MCTS should go deep. Second, if you have a trained a model, the AI can make decision just use model prediction. Third, with the model, the AI can use model prediction do a few MCTS to get best decision (No need to go deep). 
