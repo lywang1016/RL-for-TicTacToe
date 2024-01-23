@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import numpy as np
 from tqdm import trange
 from alpha_mcts_parallel import AlphaMCTSParallel
-from utils import softmax
 
 class AlphaZeroParallel:
     def __init__(self, model, optimizer, game, args):
@@ -33,7 +32,7 @@ class AlphaZeroParallel:
                 spg.memory.append((spg.root.state, action_probs, player))
 
                 temperature_action_probs = action_probs ** (1 / self.args['temperature'])
-                temperature_action_probs = softmax(temperature_action_probs)
+                temperature_action_probs /= np.sum(temperature_action_probs)
                 action = np.random.choice(self.game.action_size, p=temperature_action_probs)
                 spg.state = self.game.get_next_state(spg.state.copy(), action, player)
 
