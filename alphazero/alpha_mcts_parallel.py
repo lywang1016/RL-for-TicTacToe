@@ -12,7 +12,7 @@ class AlphaMCTSParallel:
     def search(self, states, player, spGames):
         encoded_states = []
         for i in range(states.shape[0]):
-            encoded_state = self.game.get_encoded_state(states[0].copy(), player)
+            encoded_state = self.game.get_encoded_state(states[i].copy(), player)
             encoded_states.append(encoded_state)
         encoded_states = np.stack(encoded_states)
 
